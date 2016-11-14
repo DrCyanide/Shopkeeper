@@ -99,7 +99,8 @@ class FileManager{
 			return System.getProperty("user.home") + "/AppData/Roaming/LoL_Shopkeeper";
 		}
 		// Don't know where to save on Mac...
-		return "~/.LoL_Shopkeeper";
+		String unixFile = System.getProperty("user.home") + "/.LoL_Shopkeeper";
+		return unixFile;
 	}
 	
 	public void saveFile(boolean saveWithShopkeeper, String path, String filename, byte[] content){

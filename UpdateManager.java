@@ -37,10 +37,21 @@ class UpdateManager{
 		download = download.replace("Riot.DDragon.m=", "").replace(";", "").trim();
 		fileManager.saveFile(true, "regions/" + regionSlug, regionSlug + ".json", download.getBytes());
 		
-		String baseUrl = getBaseURL(regionSlug);
-		System.out.println(baseUrl);
-		// check if that baseUrl was the same as before.
-		// If so, no need to re-download files
+	    Gson gson = new Gson();
+	    Map<String, Object> json = gson.fromJson(download, Map.class);
+	    String version = (String) json.get("v");
+	    
+	    // If the league_version is the same, then there should be no new images, so no need to update
+	    if(!version.equals(settings.get("league_version")))
+	    {
+	        //System.out.println("Updating static data...");
+		    String baseUrl = getBaseURL(regionSlug);
+		    updateStaticData(regionSlug, baseUrl, (String)json.get("l"));
+		
+		    settings.put("league_version",version);
+		    fileManager.writeSettings(settings);
+		}
+		
 	}
 	
 	
@@ -54,18 +65,17 @@ class UpdateManager{
 		return cdn + "/" + version;
 	}
 	
-	private void updateStaticData(String region, String cdn, String version, String language){
-		String basePath = cdn + "/" + version;
+	private void updateStaticData(String regionSlug, String basePath, String language){
 		String languagePath = basePath + "/data/" + language;
 		
-		getJsonAndSprites(region, basePath, languagePath, "item");
-		getJsonAndSprites(region, basePath, languagePath, "champion");
-		getJsonAndSprites(region, basePath, languagePath, "summoner");
+		getJsonAndSprites(regionSlug, basePath, languagePath, "item");
+		getJsonAndSprites(regionSlug, basePath, languagePath, "champion");
+		getJsonAndSprites(regionSlug, basePath, languagePath, "summoner");
 	}
 	
-	private void getJsonAndSprites(String region, String basePath, String languagePath, String dataName){
+	private void getJsonAndSprites(String regionSlug, String basePath, String languagePath, String dataName){
 		byte[] data = fileManager.downloadFile(languagePath + "/" + dataName + ".json");
-		fileManager.saveFile(true, "regions/" + region, dataName + ".json", data);
+		fileManager.saveFile(true, "regions/" + regionSlug, dataName + ".json", data);
 		
 		Set<String> sprites = new HashSet<String>();
 		Gson gson = new Gson();
