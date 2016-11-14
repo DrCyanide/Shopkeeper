@@ -31,6 +31,9 @@ class UpdateManager{
 	}
 	
 	public void loadRegion(String regionSlug){
+	    settings.put("region", regionSlug);
+	    fileManager.writeSettings(settings);
+	
 		// Download the regions file and save it
 		String address = "http://ddragon.leagueoflegends.com/realms/" + regionSlug + ".js";
 		String download = new String(fileManager.downloadFile(address));
