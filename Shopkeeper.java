@@ -9,6 +9,7 @@ class Shopkeeper{
 		updateManager = new UpdateManager();
 		updateManager.loadRegion();
 		
+		View view = new View();
 		/*
 		Item item = new Item("3751");
 		System.out.println("Item Name: " + item.name);

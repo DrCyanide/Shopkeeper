@@ -5,7 +5,9 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import java.awt.image.BufferedImage;
+import java.awt.*;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 
 class Item{
@@ -64,6 +66,11 @@ class Item{
         y = ((Double)image.get("y")).intValue();
         h = ((Double)image.get("h")).intValue();
         w = ((Double)image.get("w")).intValue();
+		
+		Map<String, Object> gold = (Map<String, Object>)json.get("gold");
+		cost_total = ((Double)gold.get("total")).intValue();
+		cost_combine = ((Double)gold.get("base")).intValue();
+		cost_sell = ((Double)gold.get("sell")).intValue();
     }
     
     private BufferedImage cropImage(BufferedImage spriteImage){
@@ -72,9 +79,17 @@ class Item{
     
     
     public JPanel getSummaryPanel(BufferedImage spriteImage){
+		int pad = 3;
         JPanel panel = new JPanel();
+		panel.setBackground(new Color(153,153,0));
+		panel.setLayout(new BorderLayout());
+		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
+		
         JLabel icon = new JLabel(new ImageIcon(cropImage(spriteImage)));
-        panel.add(icon);
+		JLabel gold = new JLabel("" + cost_total, SwingConstants.CENTER);
+		
+        panel.add(icon, BorderLayout.CENTER);
+		panel.add(gold, BorderLayout.SOUTH);
         return panel;
     }
 

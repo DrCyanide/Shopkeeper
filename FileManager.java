@@ -163,16 +163,26 @@ class FileManager{
 	}	
 	
 	
-	public BufferedImage[] loadImages(String type){
-	    ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+	public Map<String, BufferedImage>  loadImages(String type){
+		// type = "item", "champion" or "summoner"
+		Map<String, BufferedImage> images = new HashMap<String, BufferedImage>();
 	    
-	    // Iterate over the folder, returning all
-	    
-	    BufferedImage[] output = new BufferedImage[images.size()];
-		for(int i=0; i<images.size(); i++){
-			output[i] = images.get(i);
+		// Iterate over the folder, returning all images 
+		File directory = new File(saveDir + "/img/" + type);
+		File[] files = directory.listFiles();
+		Arrays.sort(files);
+		for(File file : files){
+			if(file.getName().contains(type)){
+				try{
+				images.put(file.getName(), ImageIO.read(file));
+				} catch (Exception e){
+					System.out.println("Unable to read '" + file.getName() + "'");
+					e.printStackTrace();
+				}
+			}
 		}
-		return output
+	    
+		return images;
 	}
 	
 	public byte[] downloadFile(String address){
