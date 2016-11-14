@@ -30,16 +30,31 @@ class UpdateManager{
 		settings = fileManager.readSettings();
 	}
 	
+	public void loadRegion(){
+	    // If no region was specified and none in settings, then use "na"
+	    String regionSlug = settings.get("region");
+	    if(regionSlug.equals(""))
+	        regionSlug = "na";
+        loadRegion(regionSlug);
+	}
+	
 	public void loadRegion(String regionSlug){
 	    settings.put("region", regionSlug);
 	    fileManager.writeSettings(settings);
 	
 		// Download the regions file and save it
 		String address = "http://ddragon.leagueoflegends.com/realms/" + regionSlug + ".js";
-		String download = new String(fileManager.downloadFile(address));
-		download = download.replace("Riot.DDragon.m=", "").replace(";", "").trim();
-		fileManager.saveFile(true, "regions/" + regionSlug, regionSlug + ".json", download.getBytes());
-		
+		byte[] regionJson = fileManager.downloadFile(address);
+		String download;
+		if (regionJson.length > 0){
+		    download = new String(regionJson);
+		    download = download.replace("Riot.DDragon.m=", "").replace(";", "").trim();
+		    fileManager.saveFile(true, "regions/" + regionSlug, regionSlug + ".json", download.getBytes());
+		}
+		else{
+		    // Load the old region, since that's better than empty
+		    download = new String(fileManager.loadFile(true, "regions/" + regionSlug, regionSlug + ".json"));
+		}
 	    Gson gson = new Gson();
 	    Map<String, Object> json = gson.fromJson(download, Map.class);
 	    String version = (String) json.get("v");
@@ -78,6 +93,9 @@ class UpdateManager{
 	
 	private void getJsonAndSprites(String regionSlug, String basePath, String languagePath, String dataName){
 		byte[] data = fileManager.downloadFile(languagePath + "/" + dataName + ".json");
+		if(data.length == 0){
+		    return; // No data is worse than not up-to-date data
+		}
 		fileManager.saveFile(true, "regions/" + regionSlug, dataName + ".json", data);
 		
 		Set<String> sprites = new HashSet<String>();
@@ -98,7 +116,9 @@ class UpdateManager{
 		// download all the sprites found
 		for(String entry : sprites){
 			byte[] imageData = fileManager.downloadFile(basePath + "/img/sprite/" + entry);
-			fileManager.saveFile(true,"img/" + dataName, entry, imageData);
+			if(imageData.length > 0){
+    			fileManager.saveFile(true,"img/" + dataName, entry, imageData);
+			}
 		}
 		
 	}
