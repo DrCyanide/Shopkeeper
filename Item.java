@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Map;
 import com.google.gson.Gson;
 
+import java.awt.image.BufferedImage;
+import javax.swing.*;
+
+
 class Item{
     
     
@@ -60,6 +64,18 @@ class Item{
         y = ((Double)image.get("y")).intValue();
         h = ((Double)image.get("h")).intValue();
         w = ((Double)image.get("w")).intValue();
+    }
+    
+    private BufferedImage cropImage(BufferedImage spriteImage){
+        return spriteImage.getSubimage(x, y, w, h);
+    }
+    
+    
+    public JPanel getSummaryPanel(BufferedImage spriteImage){
+        JPanel panel = new JPanel();
+        JLabel icon = new JLabel(new ImageIcon(cropImage(spriteImage)));
+        panel.add(icon);
+        return panel;
     }
 
 }

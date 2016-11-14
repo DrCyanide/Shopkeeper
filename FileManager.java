@@ -6,6 +6,8 @@ import java.net.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -159,6 +161,19 @@ class FileManager{
 		}
 		return new byte[0];
 	}	
+	
+	
+	public BufferedImage[] loadImages(String type){
+	    ArrayList<BufferedImage> images = new ArrayList<BufferedImage>();
+	    
+	    // Iterate over the folder, returning all
+	    
+	    BufferedImage[] output = new BufferedImage[images.size()];
+		for(int i=0; i<images.size(); i++){
+			output[i] = images.get(i);
+		}
+		return output
+	}
 	
 	public byte[] downloadFile(String address){
 		InputStream instream = null;
