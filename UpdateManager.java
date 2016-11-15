@@ -92,10 +92,17 @@ class UpdateManager{
 	}
 	
 	private void getJsonAndSprites(String regionSlug, String basePath, String languagePath, String dataName){
-		byte[] data = fileManager.downloadFile(languagePath + "/" + dataName + ".json");
-		if(data.length == 0){
-		    return; // No data is worse than not up-to-date data
+		String path = languagePath + "/" + dataName + ".json";
+		byte[] data = fileManager.downloadFile(path);
+		int tries = 0;
+		while(data.length == 0 && tries < 3){
+		    data = fileManager.downloadFile(languagePath + "/" + dataName + ".json");
 		}
+		if(data.length == 0){
+			System.out.println("Failed to download '" + path + "'");
+			return;
+		}
+		
 		fileManager.saveFile(true, "regions/" + regionSlug, dataName + ".json", data);
 		
 		Set<String> sprites = new HashSet<String>();

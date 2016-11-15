@@ -200,7 +200,7 @@ class FileManager{
 				while(bin.available()>0){
 					allBytes.add((byte)bin.read());
 				}
-				Thread.sleep(500);
+				Thread.sleep(750);
 			}
 
 			

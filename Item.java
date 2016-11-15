@@ -84,7 +84,12 @@ class Item{
     }
     
     private BufferedImage cropImage(BufferedImage spriteImage){
-        return spriteImage.getSubimage(x, y, w, h);
+		if(spriteImage == null){
+			System.out.println("Sprite Image not found, should be " + sprite);
+			return spriteImage;
+		}else{
+			return spriteImage.getSubimage(x, y, w, h);
+		}
     }
     
     
@@ -95,12 +100,17 @@ class Item{
 		panel.setLayout(new BorderLayout());
 		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
 		
-        JLabel icon = new JLabel(new ImageIcon(itemicon));
+        JLabel icon = new JLabel(new ImageIcon(itemicon, name));
 		JLabel gold = new JLabel("" + cost_total, SwingConstants.CENTER);
 		
         panel.add(icon, BorderLayout.CENTER);
 		panel.add(gold, BorderLayout.SOUTH);
-        return panel;
+		
+		// new JPanel to pad the created one in the grid layout
+		JPanel output = new JPanel();
+		output.add(panel);
+		
+        return output; 
     }
 
 }

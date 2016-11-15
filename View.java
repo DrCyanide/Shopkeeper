@@ -14,16 +14,14 @@ class View{
     public View(){
         JFrame frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setPreferredSize(new Dimension(600,450));
         
 		loadBufferedImages();
 		loadItems();
 		
-        JScrollPane scrollArea = new JScrollPane();
-        scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        
         JPanel allContent = new JPanel();
         allContent.setLayout(new GridLayout(0, 5));
+		
         
         //allContent.setPreferredSize(new Dimension(500, 400));
         //allContent.add(scrollPane);
@@ -32,7 +30,12 @@ class View{
             allContent.add(item.getValue().getSummaryPanel());
         }
         
-        frame.getContentPane().add(allContent);
+		JScrollPane scrollArea = new JScrollPane(allContent);
+        scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		//scrollArea.setPreferredSize(new Dimension(300, 450));
+		
+        frame.getContentPane().add(scrollArea);
         frame.pack();
         frame.setVisible(true);
     }
@@ -61,7 +64,7 @@ class View{
         
         for(String itemId : data.keySet()){
             Item item = new Item((Map<String, Object>)data.get(itemId));
-            item.setIcon(images.get("items").get(item.sprite)); // Set the icon
+            item.setIcon((images.get("items")).get(item.sprite)); // Set the icon
 			items.put(itemId, item);
 		}
         
