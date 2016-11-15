@@ -21,6 +21,8 @@ class Item{
     public String sprite;
     public int x,y,w,h; // location within the sprite
     
+    public BufferedImage itemicon;
+    
     public Item(int itemId){
         this(String.format("%04d",itemId)); // call Item's other constructor
     }
@@ -33,6 +35,7 @@ class Item{
     public Item(Map<String, Object> json){
         setConstants(json);
     }
+    
     
     private Map<String, Object> convertItemIdToMap(String itemId){
         id = itemId;
@@ -61,6 +64,8 @@ class Item{
         tags = (List)json.get("tags");
         
         Map<String, Object> image = (Map<String, Object>)json.get("image");
+        id = (String)image.get("full");
+        id = id.substring(0, id.lastIndexOf('.'));
         sprite = (String)image.get("sprite");
         x = ((Double)image.get("x")).intValue();
         y = ((Double)image.get("y")).intValue();
@@ -73,19 +78,24 @@ class Item{
 		cost_sell = ((Double)gold.get("sell")).intValue();
     }
     
+    
+    public void setIcon(BufferedImage spriteImage){
+        itemicon = cropImage(spriteImage);
+    }
+    
     private BufferedImage cropImage(BufferedImage spriteImage){
         return spriteImage.getSubimage(x, y, w, h);
     }
     
     
-    public JPanel getSummaryPanel(BufferedImage spriteImage){
+    public JPanel getSummaryPanel(){
 		int pad = 3;
         JPanel panel = new JPanel();
 		panel.setBackground(new Color(153,153,0));
 		panel.setLayout(new BorderLayout());
 		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
 		
-        JLabel icon = new JLabel(new ImageIcon(cropImage(spriteImage)));
+        JLabel icon = new JLabel(new ImageIcon(itemicon));
 		JLabel gold = new JLabel("" + cost_total, SwingConstants.CENTER);
 		
         panel.add(icon, BorderLayout.CENTER);
