@@ -14,12 +14,13 @@ class View implements MouseListener{
 	
 	Map<String, Item> items;
 	
-	JPanel itemList, itemDetails;
+	JPanel itemList;
+	ItemDetailsPanel itemDetails;
 	JFrame frame;
     public View(){
         frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(650,450));
+		frame.setPreferredSize(new Dimension(700,450));
         
 		loadBufferedImages();
 		loadItems();
@@ -40,7 +41,7 @@ class View implements MouseListener{
 		scrollArea.setPreferredSize(new Dimension(400, 400));
 		
 		// ------
-		itemDetails = populateDetailsPanel("");
+		itemDetails = new ItemDetailsPanel();
 		
 		masterPanel.add(scrollArea);
 		masterPanel.add(itemDetails);
@@ -108,22 +109,6 @@ class View implements MouseListener{
         return output; 
 	}
 	
-	private JPanel populateDetailsPanel(String itemId){
-		JPanel details = new JPanel();
-		details.setPreferredSize(new Dimension(200,400));
-		
-		if(itemId.equals("")){
-			return details;
-		}
-		System.out.println("Populating...");
-		// Find the item, display some info
-		Item item = items.get(itemId);
-		details.add(new JLabel(item.name));
-		details.add(new JLabel(new ImageIcon(item.itemicon, item.name)));
-		details.add(new JLabel("" + item.cost_total));
-		
-		return details;
-	}
    
 	// ===============
 	// Mouse Events
@@ -145,9 +130,7 @@ class View implements MouseListener{
 	public void mouseClicked(MouseEvent e){
 		//System.out.println("Clicked!");
 		String id = getItemId(e);
-		System.out.println("Item ID: " + id);
-		itemDetails = populateDetailsPanel(id);
-		
+		itemDetails.updateItem(items.get(id));
 	}
 	public void mousePressed(MouseEvent e){
 		//System.out.println("Pressed");
