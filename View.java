@@ -26,6 +26,10 @@ class View implements MouseListener{
 		loadItems();
 		
 		JPanel masterPanel = new JPanel();
+		masterPanel.setLayout(new BorderLayout());
+		
+		JPanel itemsPanels = new JPanel();
+		itemsPanels.setLayout(new BorderLayout());
 		
 		// ------
         itemList = new JPanel();
@@ -43,10 +47,11 @@ class View implements MouseListener{
 		// ------
 		itemDetails = new ItemDetailsPanel();
 		
-		masterPanel.add(scrollArea);
-		masterPanel.add(itemDetails);
+		itemsPanels.add(scrollArea, BorderLayout.WEST);
+		itemsPanels.add(itemDetails, BorderLayout.EAST);
 		
-        //frame.getContentPane().add(scrollArea);
+		masterPanel.add(itemsPanels, BorderLayout.WEST);
+
 		frame.getContentPane().add(masterPanel);
 		frame.pack();
         frame.setVisible(true);
