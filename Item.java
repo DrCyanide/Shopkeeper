@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+
 
 
 class Item{
@@ -92,25 +92,4 @@ class Item{
 		}
     }
     
-    
-    public JPanel getSummaryPanel(){
-		int pad = 3;
-        JPanel panel = new JPanel();
-		panel.setBackground(new Color(153,153,0));
-		panel.setLayout(new BorderLayout());
-		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
-		
-        JLabel icon = new JLabel(new ImageIcon(itemicon, name));
-		JLabel gold = new JLabel("" + cost_total, SwingConstants.CENTER);
-		
-        panel.add(icon, BorderLayout.CENTER);
-		panel.add(gold, BorderLayout.SOUTH);
-		
-		// new JPanel to pad the created one in the grid layout
-		JPanel output = new JPanel();
-		output.add(panel);
-		
-        return output; 
-    }
-
 }

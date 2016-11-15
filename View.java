@@ -2,43 +2,56 @@
 import java.util.Map;
 import java.util.HashMap;
 import com.google.gson.Gson;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 
-class View{
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
+class View implements MouseListener{
     Map<String, Map<String, BufferedImage>> images;
 	
 	Map<String, Item> items;
 	
+	JPanel itemList, itemDetails;
+	JFrame frame;
     public View(){
-        JFrame frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
+        frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(600,450));
+		frame.setPreferredSize(new Dimension(650,450));
         
 		loadBufferedImages();
 		loadItems();
 		
-        JPanel allContent = new JPanel();
-        allContent.setLayout(new GridLayout(0, 5));
+		JPanel masterPanel = new JPanel();
 		
-        
-        //allContent.setPreferredSize(new Dimension(500, 400));
-        //allContent.add(scrollPane);
+		// ------
+        itemList = new JPanel();
+        itemList.setLayout(new GridLayout(0, 5));
         
         for(Map.Entry<String, Item> item : items.entrySet()){
-            allContent.add(item.getValue().getSummaryPanel());
+            itemList.add(getItemSummaryPanel(item.getValue()));
         }
         
-		JScrollPane scrollArea = new JScrollPane(allContent);
+		JScrollPane scrollArea = new JScrollPane(itemList);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//scrollArea.setPreferredSize(new Dimension(300, 450));
+		scrollArea.setPreferredSize(new Dimension(400, 400));
 		
-        frame.getContentPane().add(scrollArea);
-        frame.pack();
+		// ------
+		itemDetails = populateDetailsPanel("");
+		
+		masterPanel.add(scrollArea);
+		masterPanel.add(itemDetails);
+		
+        //frame.getContentPane().add(scrollArea);
+		frame.getContentPane().add(masterPanel);
+		frame.pack();
         frame.setVisible(true);
     }
+	
+	
 	
 	private void loadBufferedImages(){
 	    images = new HashMap<String, Map<String, BufferedImage>>();
@@ -69,5 +82,84 @@ class View{
 		}
         
     }
+	
+	private JPanel getItemSummaryPanel(Item item){
+		int pad = 3;
+        JPanel panel = new JPanel();
+		panel.setBackground(new Color(153,153,0));
+		panel.setLayout(new BorderLayout());
+		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
+		
+        JLabel icon = new JLabel(new ImageIcon(item.itemicon, item.name));
+		JLabel gold = new JLabel("" + item.cost_total, SwingConstants.CENTER);
+		JLabel itemId = new JLabel("itemId:"+item.id);
+		itemId.setVisible(false);
+		
+        panel.add(icon, BorderLayout.CENTER);
+		panel.add(gold, BorderLayout.SOUTH);
+		panel.add(itemId, BorderLayout.NORTH);
+		
+		panel.addMouseListener(this);
+		
+		// new JPanel to pad the created one in the grid layout
+		JPanel output = new JPanel();
+		output.add(panel);
+		
+        return output; 
+	}
+	
+	private JPanel populateDetailsPanel(String itemId){
+		JPanel details = new JPanel();
+		details.setPreferredSize(new Dimension(200,400));
+		
+		if(itemId.equals("")){
+			return details;
+		}
+		System.out.println("Populating...");
+		// Find the item, display some info
+		Item item = items.get(itemId);
+		details.add(new JLabel(item.name));
+		details.add(new JLabel(new ImageIcon(item.itemicon, item.name)));
+		details.add(new JLabel("" + item.cost_total));
+		
+		return details;
+	}
+   
+	// ===============
+	// Mouse Events
+	// ===============
+	private String getItemId(MouseEvent e){
+		if(e.getComponent().getClass().getName() == "javax.swing.JPanel"){
+			for(Component c: ((JPanel)e.getComponent()).getComponents()){
+				if(!c.isVisible() && c.getClass().getName() == "javax.swing.JLabel"){
+					String text = ((JLabel)c).getText();
+					if(text.contains("itemId:")){
+						return text.substring(text.indexOf(":")+1,text.length());
+					}
+				}
+			}
+		}
+		return "";
+	}
+	
+	public void mouseClicked(MouseEvent e){
+		//System.out.println("Clicked!");
+		String id = getItemId(e);
+		System.out.println("Item ID: " + id);
+		itemDetails = populateDetailsPanel(id);
+		
+	}
+	public void mousePressed(MouseEvent e){
+		//System.out.println("Pressed");
+	}
+	public void mouseReleased(MouseEvent e){
+		//System.out.println("Released");
+	}
+	public void mouseEntered(MouseEvent e){
+		//System.out.println("Entered");
+	}
+	public void mouseExited(MouseEvent e){
+		//System.out.println("Exited");
+	}
    
 }
