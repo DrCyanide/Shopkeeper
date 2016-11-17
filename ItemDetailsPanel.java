@@ -42,6 +42,7 @@ class ItemDetailsPanel extends JPanel{
 		
 		buildFromPanel = new JPanel();
 		buildFromPanel.setBackground(backgroundColor);
+		buildFromPanel.setForeground(textColor);
 		buildFromPanel.setLayout(new GridLayout(1, 0));
 		JScrollPane buildFromScroll = new JScrollPane(buildFromPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
@@ -90,8 +91,14 @@ class ItemDetailsPanel extends JPanel{
 		if(item.from != null){
 		    for(String id: item.from){
 		        buildFromPanel.add(getItemPanel(items.get(id)));
+		        JLabel plus = new JLabel("+", JLabel.CENTER);
+		        plus.setForeground(textColor);
+		        buildFromPanel.add(plus);
 		    }
 		}
+		JLabel combineCost = new JLabel("" + item.cost_combine + "g", JLabel.CENTER);
+		combineCost.setForeground(textColor);
+		buildFromPanel.add(combineCost);
 	}
 	
 	public JPanel getItemPanel(Item item){
@@ -99,9 +106,12 @@ class ItemDetailsPanel extends JPanel{
 	    panel.setOpaque(false);
 	    panel.setPreferredSize(new Dimension(48 + 6, 48));
 	    
+	    //System.out.println(item.itemicon);
 	    JLabel icon = new JLabel(new ImageIcon(item.itemicon));
-	    
+	    JLabel itemId = new JLabel("itemId:"+item.id);
+		itemId.setVisible(false);
 	    panel.add(icon);
+	    panel.add(itemId);
 	    
 	    return panel;
 	}
