@@ -16,16 +16,23 @@ class ItemDetailsPanel extends JPanel{
 	
 	Map<String, Item> items;
 	
+	int maxWidth = 300;
+	
 	public ItemDetailsPanel(Map<String, Item> items){
 	    this.items = items;
 	    setBackground(backgroundColor);
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setLayout(new BorderLayout());
 		
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new GridLayout(3,1));
+		topPanel.setOpaque(false);
+		
 		buildIntoPanel = new JPanel();
 		buildIntoPanel.setBackground(backgroundColor);
 		buildIntoPanel.setLayout(new GridLayout(1, 0));
 		JScrollPane buildIntoScroll = new JScrollPane(buildIntoPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		buildIntoScroll.setPreferredSize(new Dimension(maxWidth, 60));
 		
 		nameAndIcon = new JLabel("No Item", SwingConstants.CENTER);
 		nameAndIcon.setForeground(textColor);
@@ -36,6 +43,7 @@ class ItemDetailsPanel extends JPanel{
 		buildFromPanel = new JPanel();
 		buildFromPanel.setBackground(backgroundColor);
 		buildFromPanel.setLayout(new GridLayout(1, 0));
+		JScrollPane buildFromScroll = new JScrollPane(buildFromPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		description = new JEditorPane();
 		description.setEditable(false);
@@ -48,17 +56,19 @@ class ItemDetailsPanel extends JPanel{
 		//description.setLineWrap(true);
 		//description.setWrapStyleWord(true);
 		descriptionScroll = new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		descriptionScroll.setPreferredSize(new Dimension(250, 200));
+		descriptionScroll.setPreferredSize(new Dimension(maxWidth, 200));
 		
 		
-		add(buildIntoScroll, BorderLayout.NORTH);
-		//add(name);
-		//add(icon);
-		add(nameAndIcon, BorderLayout.CENTER);
+		topPanel.add(buildIntoScroll);
+		topPanel.add(nameAndIcon);
+		topPanel.add(buildFromScroll);
 		
-		//add(scroll);
+		add(topPanel, BorderLayout.CENTER);
+		//add(buildIntoScroll, BorderLayout.NORTH);
+		//add(nameAndIcon, BorderLayout.CENTER);
+		
 		add(descriptionScroll, BorderLayout.SOUTH);
-		setMaximumSize(new Dimension(250,400));
+		setMaximumSize(new Dimension(maxWidth,400));
 	}
 	
 	public void updateItem(Item item){
@@ -69,9 +79,31 @@ class ItemDetailsPanel extends JPanel{
 		// It'd be nice to auto scroll to the top...
 		
 		buildIntoPanel.removeAll();
-		for(String id: item.into){
-		    buildIntoPanel.add(new JLabel(new ImageIcon(items.get(id).itemicon)));
+		buildIntoPanel.repaint();
+		buildFromPanel.removeAll();
+		buildFromPanel.repaint();
+		if(item.into != null){
+		    for(String id: item.into){
+		        buildIntoPanel.add(getItemPanel(items.get(id)));
+		    }
 		}
+		if(item.from != null){
+		    for(String id: item.from){
+		        buildFromPanel.add(getItemPanel(items.get(id)));
+		    }
+		}
+	}
+	
+	public JPanel getItemPanel(Item item){
+	    JPanel panel = new JPanel();
+	    panel.setOpaque(false);
+	    panel.setPreferredSize(new Dimension(48 + 6, 48));
+	    
+	    JLabel icon = new JLabel(new ImageIcon(item.itemicon));
+	    
+	    panel.add(icon);
+	    
+	    return panel;
 	}
 	
 	private void addDescriptionText(String text){
