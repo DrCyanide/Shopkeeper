@@ -45,7 +45,7 @@ class View implements MouseListener{
 		scrollArea.setPreferredSize(new Dimension(400, 400));
 		
 		// ------
-		itemDetails = new ItemDetailsPanel();
+		itemDetails = new ItemDetailsPanel(items);
 		
 		itemsPanels.add(scrollArea, BorderLayout.WEST);
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
