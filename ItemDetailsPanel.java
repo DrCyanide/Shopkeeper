@@ -15,14 +15,20 @@ class ItemDetailsPanel extends JPanel{
 	JScrollPane descriptionScroll;
 	
 	Map<String, Item> items;
+	String currentItemId = "";
 	
-	int maxWidth = 300;
+	int maxWidth = 285;
+	int maxHeight = 450;
+	
+	ItemListener itemListener;
 	
 	public ItemDetailsPanel(Map<String, Item> items){
 	    this.items = items;
+	    itemListener = new ItemListener(this);
 	    setBackground(backgroundColor);
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setLayout(new BorderLayout());
+		setPreferredSize(new Dimension(maxWidth, maxHeight));
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(3,1));
@@ -45,6 +51,7 @@ class ItemDetailsPanel extends JPanel{
 		buildFromPanel.setForeground(textColor);
 		buildFromPanel.setLayout(new GridLayout(1, 0));
 		JScrollPane buildFromScroll = new JScrollPane(buildFromPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		buildFromScroll.setPreferredSize(new Dimension(maxWidth, 60));
 		
 		description = new JEditorPane();
 		description.setEditable(false);
@@ -54,8 +61,6 @@ class ItemDetailsPanel extends JPanel{
 		String htmlTextColor = String.format("body { color: rgb(%d, %d, %d); } unique { font-weight: bold; }", textColor.getRed(), textColor.getGreen(), textColor.getBlue());
 		
 		((HTMLDocument)description.getDocument()).getStyleSheet().addRule(htmlTextColor);
-		//description.setLineWrap(true);
-		//description.setWrapStyleWord(true);
 		descriptionScroll = new JScrollPane(description, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		descriptionScroll.setPreferredSize(new Dimension(maxWidth, 200));
 		
@@ -72,25 +77,25 @@ class ItemDetailsPanel extends JPanel{
 		setMaximumSize(new Dimension(maxWidth,400));
 	}
 	
-	public void updateItem(Item item){
+	public void updateItem(String id){
+	    Item item = items.get(id);
 		nameAndIcon.setText(item.name);
 		nameAndIcon.setIcon(new ImageIcon(item.itemicon));
 		
 		addDescriptionText(item.description.trim());
-		// It'd be nice to auto scroll to the top...
-		
+
 		buildIntoPanel.removeAll();
 		buildIntoPanel.repaint();
 		buildFromPanel.removeAll();
 		buildFromPanel.repaint();
 		if(item.into != null){
-		    for(String id: item.into){
-		        buildIntoPanel.add(getItemPanel(items.get(id)));
+		    for(String toId: item.into){
+		        buildIntoPanel.add(getItemPanel(items.get(toId)));
 		    }
 		}
 		if(item.from != null){
-		    for(String id: item.from){
-		        buildFromPanel.add(getItemPanel(items.get(id)));
+		    for(String fromId: item.from){
+		        buildFromPanel.add(getItemPanel(items.get(fromId)));
 		        JLabel plus = new JLabel("+", JLabel.CENTER);
 		        plus.setForeground(textColor);
 		        buildFromPanel.add(plus);
@@ -112,12 +117,13 @@ class ItemDetailsPanel extends JPanel{
 		itemId.setVisible(false);
 	    panel.add(icon);
 	    panel.add(itemId);
-	    
+	    panel.addMouseListener(itemListener);
 	    return panel;
 	}
 	
 	private void addDescriptionText(String text){
 		description.setText("");
 		description.setText("<html><body>" + text + "</body></html>");
+		description.setCaretPosition(0);
 	}
 }

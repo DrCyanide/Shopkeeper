@@ -9,18 +9,21 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-class View implements MouseListener{
+class View{
     Map<String, Map<String, BufferedImage>> images;
-	
 	Map<String, Item> items;
 	
 	JPanel itemList;
 	ItemDetailsPanel itemDetails;
+	ItemListener itemListener;
 	JFrame frame;
+	
+	int maxWidth = 700;
+	int maxHeight = 450;
     public View(){
         frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setPreferredSize(new Dimension(700,450));
+		frame.setPreferredSize(new Dimension(maxWidth,maxHeight));
         
 		loadBufferedImages();
 		loadItems();
@@ -30,6 +33,9 @@ class View implements MouseListener{
 		
 		JPanel itemsPanels = new JPanel();
 		itemsPanels.setLayout(new BorderLayout());
+		
+		itemDetails = new ItemDetailsPanel(items);
+		itemListener = new ItemListener(itemDetails);
 		
 		// ------
         itemList = new JPanel();
@@ -45,7 +51,8 @@ class View implements MouseListener{
 		scrollArea.setPreferredSize(new Dimension(400, 400));
 		
 		// ------
-		itemDetails = new ItemDetailsPanel(items);
+		
+		
 		
 		itemsPanels.add(scrollArea, BorderLayout.WEST);
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
@@ -105,7 +112,7 @@ class View implements MouseListener{
 		panel.add(gold, BorderLayout.SOUTH);
 		panel.add(itemId, BorderLayout.NORTH);
 		
-		panel.addMouseListener(this);
+		panel.addMouseListener(itemListener);
 		
 		// new JPanel to pad the created one in the grid layout
 		JPanel output = new JPanel();
@@ -113,41 +120,4 @@ class View implements MouseListener{
 		
         return output; 
 	}
-	
-   
-	// ===============
-	// Mouse Events
-	// ===============
-	private String getItemId(MouseEvent e){
-		if(e.getComponent().getClass().getName() == "javax.swing.JPanel"){
-			for(Component c: ((JPanel)e.getComponent()).getComponents()){
-				if(!c.isVisible() && c.getClass().getName() == "javax.swing.JLabel"){
-					String text = ((JLabel)c).getText();
-					if(text.contains("itemId:")){
-						return text.substring(text.indexOf(":")+1,text.length());
-					}
-				}
-			}
-		}
-		return "";
-	}
-	
-	public void mouseClicked(MouseEvent e){
-		//System.out.println("Clicked!");
-		String id = getItemId(e);
-		itemDetails.updateItem(items.get(id));
-	}
-	public void mousePressed(MouseEvent e){
-		//System.out.println("Pressed");
-	}
-	public void mouseReleased(MouseEvent e){
-		//System.out.println("Released");
-	}
-	public void mouseEntered(MouseEvent e){
-		//System.out.println("Entered");
-	}
-	public void mouseExited(MouseEvent e){
-		//System.out.println("Exited");
-	}
-   
 }
