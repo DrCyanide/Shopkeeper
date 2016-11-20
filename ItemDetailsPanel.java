@@ -33,6 +33,7 @@ class ItemDetailsPanel extends JPanel{
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new GridLayout(3,1));
 		topPanel.setOpaque(false);
+		topPanel.setPreferredSize(new Dimension(maxWidth, maxHeight/2));
 		
 		buildIntoPanel = new JPanel();
 		buildIntoPanel.setBackground(backgroundColor);
@@ -90,7 +91,7 @@ class ItemDetailsPanel extends JPanel{
 		buildFromPanel.repaint();
 		if(item.into != null){
 		    for(String toId: item.into){
-		        JPanel itemPanel = getItemPanel(items.get(toId));
+		        JPanel itemPanel = RenderItem.RenderItemIconOnly(items.get(toId), itemListener);
 		        if (itemPanel != null){
 		            buildIntoPanel.add(itemPanel);
 		        }
@@ -98,7 +99,7 @@ class ItemDetailsPanel extends JPanel{
 		}
 		if(item.from != null){
 		    for(String fromId: item.from){
-		        JPanel itemPanel = getItemPanel(items.get(fromId));
+		        JPanel itemPanel = RenderItem.RenderItemIconOnly(items.get(fromId), itemListener);
 		        if (itemPanel != null){
 		            buildFromPanel.add(itemPanel);
 		            JLabel plus = new JLabel("+", JLabel.CENTER);
@@ -110,39 +111,6 @@ class ItemDetailsPanel extends JPanel{
 		JLabel combineCost = new JLabel("" + item.cost_combine + "g", JLabel.CENTER);
 		combineCost.setForeground(textColor);
 		buildFromPanel.add(combineCost);
-	}
-	
-	public JPanel getItemPanel(Item item){
-	    if(item == null){ // Recurve Bow had issues with giving null items back.
-	        return null;
-	    }
-	    
-	    JPanel panel = new JPanel();
-	    panel.setOpaque(false);
-	    panel.setPreferredSize(new Dimension(48 + 6, 48));
-	    
-	    //System.out.println(item.itemicon);
-	    ImageIcon itemicon = null;
-	    try{
-	        //System.out.println("Trying item " + item.id);
-	        //System.out.println(item.itemicon);
-	        itemicon = new ImageIcon(item.itemicon);
-        } catch (Exception e){
-            System.out.println("Error loading icon");
-            if(item == null){
-                System.out.println("Was given a null item");
-            }
-            System.out.println(e);
-        }
-        JLabel icon = null;
-        if(itemicon != null)
-    	    icon = new JLabel(itemicon);
-	    JLabel itemId = new JLabel("itemId:"+item.id);
-		itemId.setVisible(false);
-	    panel.add(icon);
-	    panel.add(itemId);
-	    panel.addMouseListener(itemListener);
-	    return panel;
 	}
 	
 	private void addDescriptionText(String text){

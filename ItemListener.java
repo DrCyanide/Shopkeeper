@@ -11,14 +11,27 @@ class ItemListener implements MouseListener{
     }
 
     private String getItemId(MouseEvent e){
-		if(e.getComponent().getClass().getName() == "javax.swing.JPanel"){
-			for(Component c: ((JPanel)e.getComponent()).getComponents()){
-				if(!c.isVisible() && c.getClass().getName() == "javax.swing.JLabel"){
-					String text = ((JLabel)c).getText();
-					if(text.contains("itemId:")){
-						return text.substring(text.indexOf(":")+1,text.length());
-					}
+        // (panel-panel-label) or (panel-label), depending on how it was made
+        Component currentComponent = e.getComponent();  
+		
+		//if(currentComponent.getClass().getName() == "javax.swing.JPanel"){
+		//	String searchPanelForId(currentComponent);
+		//}
+		return searchPanelForId(currentComponent);
+	}
+	
+	private String searchPanelForId(Component e){
+	    for(Component c: ((JPanel)e).getComponents()){
+			if(!c.isVisible() && c.getClass().getName() == "javax.swing.JLabel"){
+				String text = ((JLabel)c).getText();
+				if(text.contains("itemId:")){
+					return text.substring(text.indexOf(":")+1,text.length());
 				}
+			} else if (c.getClass().getName() == "javax.swing.JPanel"){
+			    String result = searchPanelForId(c);
+			    if(!result.equals("")){
+			        return result;
+			    }
 			}
 		}
 		return "";

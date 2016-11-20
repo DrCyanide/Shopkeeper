@@ -42,7 +42,7 @@ class View{
         itemList.setLayout(new GridLayout(0, 5));
         
         for(Map.Entry<String, Item> item : items.entrySet()){
-            itemList.add(getItemSummaryPanel(item.getValue()));
+            itemList.add(RenderItem.RenderItem(item.getValue(), itemListener));
         }
         
 		JScrollPane scrollArea = new JScrollPane(itemList);
@@ -51,8 +51,6 @@ class View{
 		scrollArea.setPreferredSize(new Dimension(400, 400));
 		
 		// ------
-		
-		
 		
 		itemsPanels.add(scrollArea, BorderLayout.WEST);
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
@@ -95,29 +93,4 @@ class View{
 		}
         
     }
-	
-	private JPanel getItemSummaryPanel(Item item){
-		int pad = 3;
-        JPanel panel = new JPanel();
-		panel.setBackground(new Color(153,153,0));
-		panel.setLayout(new BorderLayout());
-		panel.setBorder(new EmptyBorder(pad,pad,pad,pad));
-		
-        JLabel icon = new JLabel(new ImageIcon(item.itemicon, item.name));
-		JLabel gold = new JLabel("" + item.cost_total, SwingConstants.CENTER);
-		JLabel itemId = new JLabel("itemId:"+item.id);
-		itemId.setVisible(false);
-		
-        panel.add(icon, BorderLayout.CENTER);
-		panel.add(gold, BorderLayout.SOUTH);
-		panel.add(itemId, BorderLayout.NORTH);
-		
-		panel.addMouseListener(itemListener);
-		
-		// new JPanel to pad the created one in the grid layout
-		JPanel output = new JPanel();
-		output.add(panel);
-		
-        return output; 
-	}
 }
