@@ -90,15 +90,21 @@ class ItemDetailsPanel extends JPanel{
 		buildFromPanel.repaint();
 		if(item.into != null){
 		    for(String toId: item.into){
-		        buildIntoPanel.add(getItemPanel(items.get(toId)));
+		        JPanel itemPanel = getItemPanel(items.get(toId));
+		        if (itemPanel != null){
+		            buildIntoPanel.add(itemPanel);
+		        }
 		    }
 		}
 		if(item.from != null){
 		    for(String fromId: item.from){
-		        buildFromPanel.add(getItemPanel(items.get(fromId)));
-		        JLabel plus = new JLabel("+", JLabel.CENTER);
-		        plus.setForeground(textColor);
-		        buildFromPanel.add(plus);
+		        JPanel itemPanel = getItemPanel(items.get(fromId));
+		        if (itemPanel != null){
+		            buildFromPanel.add(itemPanel);
+		            JLabel plus = new JLabel("+", JLabel.CENTER);
+		            plus.setForeground(textColor);
+		            buildFromPanel.add(plus);
+		        }
 		    }
 		}
 		JLabel combineCost = new JLabel("" + item.cost_combine + "g", JLabel.CENTER);
@@ -107,12 +113,30 @@ class ItemDetailsPanel extends JPanel{
 	}
 	
 	public JPanel getItemPanel(Item item){
+	    if(item == null){ // Recurve Bow had issues with giving null items back.
+	        return null;
+	    }
+	    
 	    JPanel panel = new JPanel();
 	    panel.setOpaque(false);
 	    panel.setPreferredSize(new Dimension(48 + 6, 48));
 	    
 	    //System.out.println(item.itemicon);
-	    JLabel icon = new JLabel(new ImageIcon(item.itemicon));
+	    ImageIcon itemicon = null;
+	    try{
+	        //System.out.println("Trying item " + item.id);
+	        //System.out.println(item.itemicon);
+	        itemicon = new ImageIcon(item.itemicon);
+        } catch (Exception e){
+            System.out.println("Error loading icon");
+            if(item == null){
+                System.out.println("Was given a null item");
+            }
+            System.out.println(e);
+        }
+        JLabel icon = null;
+        if(itemicon != null)
+    	    icon = new JLabel(itemicon);
 	    JLabel itemId = new JLabel("itemId:"+item.id);
 		itemId.setVisible(false);
 	    panel.add(icon);
