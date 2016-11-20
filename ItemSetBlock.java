@@ -7,11 +7,9 @@ class ItemSetBlock{
 
     ArrayList<Item> items = new ArrayList<Item>();
     String blockName = "New Block";
-    ItemDetailsPanel itemDetails;
     ItemListener itemListener;
-    public ItemSetBlock(ItemDetailsPanel itemDetails){
-        this.itemDetails = itemDetails;
-        itemListener = new ItemListener(itemDetails);
+    public ItemSetBlock(ItemListener itemListener){
+        this.itemListener = itemListener;
     }
 
     public void addItem(Item item){
@@ -19,21 +17,32 @@ class ItemSetBlock{
     }
     
     public void removeItem(int index){
-        
+        items.remove(index);
+    }
+    
+    public void changeName(String name){
+        blockName = name;
     }
     
     public JPanel renderAsPanel(){
-        JPanel panel = new JPanel();
+        JPanel outerPanel = new JPanel();
+        outerPanel.setLayout(new BorderLayout());
         
-        if(items.size() == 0){
+        JLabel nameLabel = new JLabel(blockName);
+        outerPanel.add(nameLabel, BorderLayout.NORTH);
+        
+        JPanel itemPanel = new JPanel();
+        if(items.size() == 0){this.itemListener = itemListener;
             JLabel text = new JLabel("No items added");
-            panel.add(text);
+            itemPanel.add(text);
         }else{
-            panel.setLayout(new GridLayout());
+            itemPanel.setLayout(new GridLayout(0,5));
             for(Item item : items){
-                panel.add(RenderItem.RenderItem(item, itemListener));
+                itemPanel.add(RenderItem.RenderItem(item, itemListener));
             }
         }
-        return panel;
+        
+        outerPanel.add(itemPanel, BorderLayout.CENTER);
+        return outerPanel;
     }
 }

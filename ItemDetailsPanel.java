@@ -9,7 +9,7 @@ class ItemDetailsPanel extends JPanel{
 	JEditorPane description;
 	JPanel buildIntoPanel, buildFromPanel;
 	
-	Color backgroundColor = Color.DARK_GRAY;
+	Color backgroundColor;
 	Color textColor = new Color(12, 232, 101);
 	
 	JScrollPane descriptionScroll;
@@ -17,13 +17,16 @@ class ItemDetailsPanel extends JPanel{
 	Map<String, Item> items;
 	String currentItemId = "";
 	
-	int maxWidth = 285;
-	int maxHeight = 450;
+	int maxWidth, maxHeight;
 	
 	ItemListener itemListener;
 	
-	public ItemDetailsPanel(Map<String, Item> items){
+	public ItemDetailsPanel(Map<String, Item> items, int maxWidth, int maxHeight, Color backgroundColor){
 	    this.items = items;
+	    this.maxWidth = maxWidth;
+	    this.maxHeight = maxHeight;
+	    this.backgroundColor = backgroundColor;
+	    
 	    itemListener = new ItemListener(this);
 	    setBackground(backgroundColor);
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

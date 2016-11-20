@@ -16,30 +16,44 @@ class View{
 	JPanel itemList;
 	ItemDetailsPanel itemDetails;
 	ItemListener itemListener;
+	ItemSetPanel itemSetPanel;
 	JFrame frame;
 	
-	int maxWidth = 700;
+	int itemListCol = 4;
+	int itemListWidth = 325;
+	
+	int itemDetailsWidth = 285;
+	
+	int itemSetsWidth = 325;
+	
+	int maxWidth = itemListWidth + itemDetailsWidth + itemSetsWidth + 10;
 	int maxHeight = 450;
+	
+	Color backgroundColor = Color.DARK_GRAY;
+	
     public View(){
         frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setPreferredSize(new Dimension(maxWidth,maxHeight));
+		frame.setBackground(backgroundColor);
         
 		loadBufferedImages();
 		loadItems();
 		
 		JPanel masterPanel = new JPanel();
 		masterPanel.setLayout(new BorderLayout());
+		masterPanel.setBackground(backgroundColor);
 		
 		JPanel itemsPanels = new JPanel();
 		itemsPanels.setLayout(new BorderLayout());
 		
-		itemDetails = new ItemDetailsPanel(items);
+		itemDetails = new ItemDetailsPanel(items, itemDetailsWidth, maxHeight, backgroundColor);
 		itemListener = new ItemListener(itemDetails);
+		itemSetPanel = new ItemSetPanel(itemListener, itemSetsWidth, maxHeight, backgroundColor);
 		
 		// ------
         itemList = new JPanel();
-        itemList.setLayout(new GridLayout(0, 5));
+        itemList.setLayout(new GridLayout(0, itemListCol));
         
         for(Map.Entry<String, Item> item : items.entrySet()){
             itemList.add(RenderItem.RenderItem(item.getValue(), itemListener));
@@ -48,7 +62,7 @@ class View{
 		JScrollPane scrollArea = new JScrollPane(itemList);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollArea.setPreferredSize(new Dimension(400, 400));
+		scrollArea.setPreferredSize(new Dimension(itemListWidth, maxHeight));
 		
 		// ------
 		
@@ -56,6 +70,7 @@ class View{
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
 		
 		masterPanel.add(itemsPanels, BorderLayout.WEST);
+		masterPanel.add(itemSetPanel, BorderLayout.EAST);
 
 		frame.getContentPane().add(masterPanel);
 		frame.pack();
