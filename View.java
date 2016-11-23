@@ -13,10 +13,12 @@ class View{
     Map<String, Map<String, BufferedImage>> images;
 	Map<String, Item> items;
 	
-	JPanel itemList;
+	ItemListPanel itemList;
 	ItemDetailsPanel itemDetails;
 	ItemListener itemListener;
 	ItemSetPanel itemSetPanel;
+	ControlPanel controlPanel;
+	JPanel farRight;
 	JFrame frame;
 	
 	int itemListCol = 4;
@@ -44,33 +46,38 @@ class View{
 		masterPanel.setLayout(new BorderLayout());
 		masterPanel.setBackground(backgroundColor);
 		
+		// ------
+		
 		JPanel itemsPanels = new JPanel();
 		itemsPanels.setLayout(new BorderLayout());
 		
 		itemDetails = new ItemDetailsPanel(items, itemDetailsWidth, maxHeight, backgroundColor);
 		itemListener = new ItemListener(itemDetails);
-		itemSetPanel = new ItemSetPanel(itemListener, itemSetsWidth, maxHeight, backgroundColor);
 		
-		// ------
-        itemList = new JPanel();
-        itemList.setLayout(new GridLayout(0, itemListCol));
-        
-        for(Map.Entry<String, Item> item : items.entrySet()){
-            itemList.add(RenderItem.RenderItem(item.getValue(), itemListener));
-        }
+        itemList = new ItemListPanel(items, backgroundColor);
+        itemList.addItemListener(itemListener);
+        itemList.populateItems();
         
 		JScrollPane scrollArea = new JScrollPane(itemList);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollArea.setPreferredSize(new Dimension(itemListWidth, maxHeight));
 		
+		farRight = new JPanel();
+		farRight.setLayout(new BorderLayout());
+		
+		controlPanel = new ControlPanel(backgroundColor);
+		itemSetPanel = new ItemSetPanel(itemListener, itemSetsWidth, maxHeight, backgroundColor);
+		
+		farRight.add(itemSetPanel, BorderLayout.CENTER);
+		farRight.add(controlPanel, BorderLayout.NORTH);
 		// ------
 		
 		itemsPanels.add(scrollArea, BorderLayout.WEST);
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
 		
 		masterPanel.add(itemsPanels, BorderLayout.WEST);
-		masterPanel.add(itemSetPanel, BorderLayout.EAST);
+		masterPanel.add(farRight, BorderLayout.EAST);
 
 		frame.getContentPane().add(masterPanel);
 		frame.pack();

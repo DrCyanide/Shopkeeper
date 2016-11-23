@@ -14,9 +14,6 @@ class ItemListener implements MouseListener{
         // (panel-panel-label) or (panel-label), depending on how it was made
         Component currentComponent = e.getComponent();  
 		
-		//if(currentComponent.getClass().getName() == "javax.swing.JPanel"){
-		//	String searchPanelForId(currentComponent);
-		//}
 		return searchPanelForId(currentComponent);
 	}
 	
