@@ -86,6 +86,9 @@ class ItemDetailsPanel extends JPanel{
 	}
 	
 	public void updateItem(String id){
+	    if(id == currentItemId){
+	        return;
+	    }
 	    Item item = items.get(id);
 		nameAndIcon.setText(item.name);
 		nameAndIcon.setIcon(new ImageIcon(item.itemicon));
@@ -118,6 +121,13 @@ class ItemDetailsPanel extends JPanel{
 		JLabel combineCost = new JLabel("" + item.cost_combine + "g", JLabel.CENTER);
 		combineCost.setForeground(textColor);
 		buildFromPanel.add(combineCost);
+		
+		buildFromPanel.revalidate();
+		buildFromPanel.repaint();
+		buildIntoPanel.revalidate();
+		buildIntoPanel.repaint();
+		
+		currentItemId = id;
 	}
 	
 	private void addDescriptionText(String text){

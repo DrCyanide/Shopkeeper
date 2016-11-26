@@ -46,6 +46,7 @@ class ItemSetBlock implements ActionListener{
         addButton = new JButton("Add");
         addButton.addActionListener(this);
         itemPanel.add(addButton);
+        itemPanel.revalidate();
         itemPanel.repaint();
     }
     

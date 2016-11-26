@@ -26,7 +26,7 @@ class View{
 	
 	int itemDetailsWidth = 285;
 	
-	int itemSetsWidth = 325;
+	int itemSetsWidth = 400;
 	
 	int maxWidth = itemListWidth + itemDetailsWidth + itemSetsWidth + 10;
 	int maxHeight = 450;
