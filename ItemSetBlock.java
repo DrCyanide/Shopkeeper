@@ -3,13 +3,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 class ItemSetBlock implements ActionListener{
 
     ArrayList<Item> items = new ArrayList<Item>();
     String blockName = "New Block";
     ItemListener itemListener;
-    JButton addButton, renameButton;
+    JButton addButton, removeButton, renameButton;
     JLabel nameLabel;
     JPanel itemPanel;
     
@@ -17,15 +20,64 @@ class ItemSetBlock implements ActionListener{
     
     public ItemSetBlock(ItemListener itemListener){
         this.itemListener = itemListener;
+        
+        renameButton = makeButton("Rename", "edit.png");
+        addButton = makeButton("Add", "plus.png");
+        removeButton = makeButton("Remove", "minus.png");
     }
+    
+    private JButton makeButton(String backupName, String imagePath){
+        JButton button;
+        try{
+            BufferedImage icon = ImageIO.read(new File(imagePath));
+            button = new JButton(new ImageIcon(icon));
+            button.setBorder(BorderFactory.createEmptyBorder());
+            button.setContentAreaFilled(false);
+            //button.setBackground(new Color(0,0,0,0));
+            button.addMouseListener(new java.awt.event.MouseAdapter(){
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    try{
+                    JButton temp = (JButton)evt.getComponent();
+                    temp.setContentAreaFilled(true);
+                    temp.setBackground(Color.GREEN);
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    try{
+                    JButton temp = (JButton)evt.getComponent();
+                    temp.setContentAreaFilled(false);
+                    temp.setBackground(new Color(0,0,0,0));
+                    
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            });
+        } catch (Exception e){
+            button = new JButton(backupName);
+        }
+        button.addActionListener(this);
+        return button;
+    }
+    
 
     public void addItem(Item item){
         items.add(item);
         redrawItemPanel();
     }
     
+    public void removeItem(Item item){
+        if(items.contains(item)){
+            removeItem(items.lastIndexOf(item));
+        } 
+    }
+    
     public void removeItem(int index){
         items.remove(index);
+        redrawItemPanel();
     }
     
     public void changeName(String blockName){
@@ -35,17 +87,15 @@ class ItemSetBlock implements ActionListener{
     
     public void redrawItemPanel(){
         itemPanel.removeAll();
-        itemPanel.repaint();
+        itemPanel.setLayout(new GridLayout(0,5));
         if(items.size() > 0){
-            itemPanel.setLayout(new GridLayout(0,5));
             for(Item item : items){
                 itemPanel.add(RenderItem.RenderItem(item, itemListener));
             }
         }
-        // add the "add" button
-        addButton = new JButton("Add");
-        addButton.addActionListener(this);
         itemPanel.add(addButton);
+        itemPanel.add(removeButton);
+        
         itemPanel.revalidate();
         itemPanel.repaint();
     }
@@ -63,9 +113,6 @@ class ItemSetBlock implements ActionListener{
         nameLabel = new JLabel(blockName);
         upperPanel.add(nameLabel, BorderLayout.WEST);
         
-        renameButton = new JButton("Rename");
-        renameButton.addActionListener(this);
-        
         upperPanel.add(renameButton, BorderLayout.EAST);
         outerPanel.add(upperPanel, BorderLayout.NORTH);
         
@@ -79,7 +126,7 @@ class ItemSetBlock implements ActionListener{
     
     public void actionPerformed(ActionEvent e){
         if(e.getSource() == renameButton){
-            String name = (String)JOptionPane.showInputDialog("New block name", null);
+            String name = (String)JOptionPane.showInputDialog("New block name", blockName);
             if(name != null && name.length() > 0){
                 changeName(name);
             }
@@ -90,6 +137,14 @@ class ItemSetBlock implements ActionListener{
             Item item = itemListener.getLastItem();
             if(item != null){
                 addItem(item);
+            }
+        }
+        
+        if(e.getSource() == removeButton){
+            // look in the item set manager
+            Item item = itemListener.getLastItem();
+            if(item != null){
+                removeItem(item);
             }
         }
     }

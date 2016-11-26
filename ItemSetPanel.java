@@ -32,16 +32,6 @@ class ItemSetPanel extends JPanel{
         
         add(scrollArea, BorderLayout.CENTER);
         addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
-        addBlock();
         
     }
     
