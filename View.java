@@ -52,7 +52,8 @@ class View{
 		itemsPanels.setLayout(new BorderLayout());
 		
 		itemDetails = new ItemDetailsPanel(items, itemDetailsWidth, maxHeight, backgroundColor);
-		itemListener = new ItemListener(itemDetails);
+		itemListener = new ItemListener(itemDetails, items);
+		itemDetails.addItemListener(itemListener);
 		
         itemList = new ItemListPanel(items, backgroundColor);
         itemList.addItemListener(itemListener);

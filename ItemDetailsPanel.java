@@ -27,7 +27,7 @@ class ItemDetailsPanel extends JPanel{
 	    this.maxHeight = maxHeight;
 	    this.backgroundColor = backgroundColor;
 	    
-	    itemListener = new ItemListener(this);
+	    //itemListener = new ItemListener(this);
 	    setBackground(backgroundColor);
 		//setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setLayout(new BorderLayout());
@@ -79,6 +79,10 @@ class ItemDetailsPanel extends JPanel{
 		
 		add(descriptionScroll, BorderLayout.SOUTH);
 		setMaximumSize(new Dimension(maxWidth,400));
+	}
+	
+	public void addItemListener(ItemListener itemListener){
+	    this.itemListener = itemListener;
 	}
 	
 	public void updateItem(String id){

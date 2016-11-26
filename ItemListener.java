@@ -2,12 +2,17 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Map;
 
 class ItemListener implements MouseListener{
 
     ItemDetailsPanel itemDetails;
-    public ItemListener(ItemDetailsPanel itemDetails){
+    String lastFoundId = "";
+    Map<String, Item> items;
+    
+    public ItemListener(ItemDetailsPanel itemDetails, Map<String, Item> items){
         this.itemDetails = itemDetails;
+        this.items = items;
     }
 
     private String getItemId(MouseEvent e){
@@ -22,7 +27,8 @@ class ItemListener implements MouseListener{
 			if(!c.isVisible() && c.getClass().getName() == "javax.swing.JLabel"){
 				String text = ((JLabel)c).getText();
 				if(text.contains("itemId:")){
-					return text.substring(text.indexOf(":")+1,text.length());
+				    lastFoundId = text.substring(text.indexOf(":")+1,text.length());
+					return lastFoundId;
 				}
 			} else if (c.getClass().getName() == "javax.swing.JPanel"){
 			    String result = searchPanelForId(c);
@@ -33,11 +39,19 @@ class ItemListener implements MouseListener{
 		}
 		return "";
 	}
+	
+	public Item getLastItem(){
+	    if(lastFoundId.length() > 0){
+	        return items.get(lastFoundId);
+	    }else{
+	        return null;
+	    }
+	}
 
     public void mouseClicked(MouseEvent e){
 		//System.out.println("Clicked!");
-		String id = getItemId(e);
-		itemDetails.updateItem(id);
+		lastFoundId = getItemId(e);
+		itemDetails.updateItem(lastFoundId);
 	}
 	public void mousePressed(MouseEvent e){
 		//System.out.println("Pressed");
