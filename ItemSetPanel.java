@@ -21,11 +21,17 @@ class ItemSetPanel extends JPanel{
         main = new JPanel();
         main.setLayout(new GridLayout(0,1));
         
+        
+        JPanel mainWrapper = new JPanel();
+        mainWrapper.add(main);
+        
         setLayout(new BorderLayout());
         setBackground(backgroundColor);
         setPreferredSize(new Dimension(maxWidth, maxHeight));
         
-        JScrollPane scrollArea = new JScrollPane(main);
+        
+        
+        JScrollPane scrollArea = new JScrollPane(mainWrapper);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setPreferredSize(new Dimension(maxWidth, maxHeight));

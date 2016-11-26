@@ -21,9 +21,9 @@ class ItemSetBlock implements ActionListener{
     public ItemSetBlock(ItemListener itemListener){
         this.itemListener = itemListener;
         
-        renameButton = makeButton("Rename", "edit.png");
-        addButton = makeButton("Add", "plus.png");
-        removeButton = makeButton("Remove", "minus.png");
+        renameButton = makeButton("Rename", "img/edit.png");
+        addButton = makeButton("Add", "img/plus.png");
+        removeButton = makeButton("Remove", "img/minus.png");
     }
     
     private JButton makeButton(String backupName, String imagePath){
