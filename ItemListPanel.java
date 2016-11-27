@@ -1,7 +1,9 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collections;
 import java.util.Map;
+import java.util.ArrayList;
 
 class ItemListPanel extends JPanel{
 
@@ -29,8 +31,13 @@ class ItemListPanel extends JPanel{
     public void populateItems(){
         removeAll();
         repaint();
-        for(Map.Entry<String, Item> item : items.entrySet()){
-            add(RenderItem.RenderItem(item.getValue(), itemListener));
+        ArrayList<Item> itemList = new ArrayList<Item>(items.values());
+        Collections.sort(itemList);
+        //for(Map.Entry<String, Item> item : items.entrySet()){
+        //    add(RenderItem.RenderItem(item.getValue(), itemListener));
+        //}
+        for(int i=0; i < itemList.size(); i++){
+            add(RenderItem.RenderItem(itemList.get(i), itemListener));
         }
     }
 }

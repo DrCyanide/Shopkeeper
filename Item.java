@@ -10,7 +10,7 @@ import javax.swing.*;
 
 
 
-class Item{
+class Item implements Comparable<Item>{
     
     
     public String id, name, description;
@@ -78,6 +78,9 @@ class Item{
 		cost_sell = ((Double)gold.get("sell")).intValue();
     }
     
+    public int compareTo(Item other){
+        return name.compareTo(other.name);
+    }
     
     public void setIcon(BufferedImage spriteImage){
         itemicon = cropImage(spriteImage);
