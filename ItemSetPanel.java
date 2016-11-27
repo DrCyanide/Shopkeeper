@@ -42,8 +42,14 @@ class ItemSetPanel extends JPanel{
     }
     
     public void addBlock(){
-        itemBlocks.add(new ItemSetBlock(itemListener));
+        itemBlocks.add(new ItemSetBlock(itemListener, this));
         redrawBlocks();
+    }
+    
+    public void removeBlock(ItemSetBlock block){
+        if(itemBlocks.contains(block)){
+            removeBlock(itemBlocks.indexOf(block));
+        }
     }
     
     public void removeBlock(int index){

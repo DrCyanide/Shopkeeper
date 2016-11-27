@@ -12,16 +12,19 @@ class ItemSetBlock implements ActionListener{
     ArrayList<Item> items = new ArrayList<Item>();
     String blockName = "New Block";
     ItemListener itemListener;
-    JButton addButton, removeButton, renameButton;
+    JButton addButton, removeButton, renameButton, deleteButton;
     JLabel nameLabel;
     JPanel itemPanel;
+    ItemSetPanel parent;
     
     Color titleBarColor = Color.GRAY;
     
-    public ItemSetBlock(ItemListener itemListener){
+    public ItemSetBlock(ItemListener itemListener, ItemSetPanel parent){
         this.itemListener = itemListener;
+        this.parent = parent;
         
         renameButton = makeButton("Rename", "img/edit.png");
+        deleteButton = makeButton("Delete", "img/delete.png");
         addButton = makeButton("Add", "img/plus.png");
         removeButton = makeButton("Remove", "img/minus.png");
     }
@@ -93,8 +96,8 @@ class ItemSetBlock implements ActionListener{
                 itemPanel.add(RenderItem.RenderItem(item, itemListener));
             }
         }
-        itemPanel.add(addButton);
-        itemPanel.add(removeButton);
+        itemPanel.add(RenderItem.wrapButton(addButton));
+        itemPanel.add(RenderItem.wrapButton(removeButton));
         
         itemPanel.revalidate();
         itemPanel.repaint();
@@ -113,7 +116,12 @@ class ItemSetBlock implements ActionListener{
         nameLabel = new JLabel(blockName);
         upperPanel.add(nameLabel, BorderLayout.WEST);
         
-        upperPanel.add(renameButton, BorderLayout.EAST);
+        JPanel nameButtons = new JPanel();
+        nameButtons.setBackground(titleBarColor);
+        nameButtons.add(renameButton);
+        nameButtons.add(deleteButton);
+        
+        upperPanel.add(nameButtons, BorderLayout.EAST);
         outerPanel.add(upperPanel, BorderLayout.NORTH);
         
         itemPanel = new JPanel();
@@ -146,6 +154,10 @@ class ItemSetBlock implements ActionListener{
             if(item != null){
                 removeItem(item);
             }
+        }
+        
+        if(e.getSource() == deleteButton){
+            parent.removeBlock(this);
         }
     }
 }
