@@ -8,6 +8,8 @@ import java.io.File;
 import java.awt.image.BufferedImage;
 
 class ItemSetPanel extends JPanel{
+    String setName = "New Item Set";
+    JLabel nameLabel;
     JPanel main;
     ArrayList<ItemSetBlock> itemBlocks = new ArrayList<ItemSetBlock>();
     ItemListener itemListener;
@@ -15,6 +17,7 @@ class ItemSetPanel extends JPanel{
     
     int maxWidth, maxHeight;
     Color backgroundColor;
+    Color setNameColor = new Color(12, 232, 101);
     
     public ItemSetPanel(ItemListener itemListener, int maxWidth, int maxHeight, Color backgroundColor){
         this.itemListener = itemListener;
@@ -79,6 +82,12 @@ class ItemSetPanel extends JPanel{
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setPreferredSize(new Dimension(maxWidth, maxHeight));
         
+        nameLabel = new JLabel(setName);
+        nameLabel.setForeground(setNameColor);
+        Font font = nameLabel.getFont();
+        nameLabel.setFont(new Font(font.getName(), font.getStyle(), font.getSize() + 6));
+        
+        add(nameLabel, BorderLayout.NORTH);
         add(scrollArea, BorderLayout.CENTER);
         addBlock();
         
