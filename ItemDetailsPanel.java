@@ -48,6 +48,10 @@ class ItemDetailsPanel extends JPanel{
 		nameAndIcon.setForeground(textColor);
 		nameAndIcon.setHorizontalTextPosition(JLabel.CENTER);
 		nameAndIcon.setVerticalTextPosition(JLabel.NORTH);
+		// used to make the edges look the same
+		JScrollPane nameAndIconScroll = new JScrollPane(nameAndIcon, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); 
+		nameAndIconScroll.getViewport().setBackground(backgroundColor);
+		
 		
 		
 		buildFromPanel = new JPanel();
@@ -70,7 +74,7 @@ class ItemDetailsPanel extends JPanel{
 		
 		
 		topPanel.add(buildIntoScroll);
-		topPanel.add(nameAndIcon);
+		topPanel.add(nameAndIconScroll);
 		topPanel.add(buildFromScroll);
 		
 		add(topPanel, BorderLayout.CENTER);
