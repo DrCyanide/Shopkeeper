@@ -66,10 +66,6 @@ class ItemSetPanel extends JPanel{
         nameLabel.setFont(new Font(font.getName(), font.getStyle(), font.getSize() + 6));
         
         upperPanel.add(nameLabel, BorderLayout.WEST);
-        
-        
-        //renameButton.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
-        
         upperPanel.add(renameButton, BorderLayout.EAST);
         
         add(upperPanel, BorderLayout.NORTH);

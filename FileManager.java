@@ -26,9 +26,6 @@ class FileManager{
 		if(settings.get("league_dir").equals("")){
 			setLeagueDir(determineLeagueDirectory());
 		} 
-		
-		//System.out.println(osType);
-		
 		//updateStaticData("na", "http://ddragon.leagueoflegends.com/cdn", "6.22.1", "en_US");
 	}
 	
@@ -58,19 +55,25 @@ class FileManager{
 	
 	private String determineOSType(){
 		//System.getProperties().list(System.out);
-		if(System.getProperty("os.name").toLowerCase().contains("windows")){
+		String osName = System.getProperty("os.name").toLowerCase();
+		if(osName.contains("windows")){
 			return "windows";
-		}else{
-			return "mac"; // no Linux version of the game right now.
+		} else {
+			return "mac"; 
 		}
+		// no Linux version of the game right now
+		//else if(osName.contains("linux")){
+		//    return "linux";
+		//}
 	}
 	
 	private String determineLeagueDirectory(){
 		// Use the OS to guess where League would be installed 
-		// for Windows "C:\Riot Games\League of Legends" or "D:\Riot Games\League of Legends"
-		String path = "Riot Games/League of Legends/Config";
+		
 		String leagueDir = "";
 		if(osType.equals("windows")){
+		    String path = "Riot Games/League of Legends/Config";
+		    /*
 			// check C: first, then D:
 			File f = new File("C:/" + path);
 			if(f.exists() && f.isDirectory()){
@@ -81,15 +84,24 @@ class FileManager{
 					leagueDir = "D:/" + path;
 				}
 			}
+			*/
+			File[] roots = File.listRoots(); // Loop through all drive letters on Windows
+			for(int i=0; i<roots.length; i++){
+			    File f = new File(roots[i], path);
+			    if(f.exists() && f.isDirectory()){
+			        leagueDir = f.getAbsolutePath();
+			        break;
+			    } 
+			}
 		} else {
 		    // Mac dir
-		    macPath = "/Applications/League of Legends.app/Contents/Lol/Config";
+		    String macPath = "/Applications/League of Legends.app/Contents/Lol/Config";
 		    File f = new File(macPath);
 		    if(f.exists() && f.isDirectory()){
 		        leagueDir = macPath;
 		    }
 		}
-		// Don't know where to check on Mac... 
+		 
 		return leagueDir;
 	}
 	public String getLeagueDir(){

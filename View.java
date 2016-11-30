@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.border.EmptyBorder;
 
 class View{
@@ -18,6 +19,9 @@ class View{
 	ItemListener itemListener;
 	ItemSetPanel itemSetPanel;
 	ControlPanel controlPanel;
+
+	JTextField itemFilterField;
+	
 	JPanel farRight;
 	JFrame frame;
 	
@@ -59,7 +63,11 @@ class View{
         itemList.addItemListener(itemListener);
         itemList.populateItems();
         
-		JScrollPane scrollArea = new JScrollPane(itemList);
+        JPanel itemListWrapper = new JPanel();
+        itemListWrapper.setBackground(backgroundColor);
+        itemListWrapper.add(itemList);
+        
+		JScrollPane scrollArea = new JScrollPane(itemListWrapper);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollArea.setPreferredSize(new Dimension(itemListWidth, maxHeight));
@@ -72,9 +80,42 @@ class View{
 		
 		farRight.add(itemSetPanel, BorderLayout.CENTER);
 		farRight.add(controlPanel, BorderLayout.NORTH);
+		
+		JPanel itemFilterPanel = new JPanel();
+		//itemFilterPanel.setBackground(backgroundColor);
+		itemFilterPanel.setLayout(new BorderLayout());
+		
+		
+		itemFilterField = new JTextField();
+		itemFilterField.getDocument().addDocumentListener(new DocumentListener(){
+            public void changedUpdate(DocumentEvent e) {
+                textChanged();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                textChanged();
+            }
+            public void insertUpdate(DocumentEvent e) {
+                textChanged();
+            }
+            public void textChanged(){
+                itemList.filterItems(itemFilterField.getText());
+            }
+		});
+		
+		itemFilterPanel.add(new JLabel("Search"), BorderLayout.WEST);// Add search icon
+		itemFilterPanel.add(itemFilterField, BorderLayout.CENTER);
+		
+		
 		// ------
 		
-		itemsPanels.add(scrollArea, BorderLayout.WEST);
+		JPanel itemFiltersAndList = new JPanel();
+		itemFiltersAndList.setLayout(new BorderLayout());
+		itemFiltersAndList.setBackground(backgroundColor);
+		
+		itemFiltersAndList.add(scrollArea, BorderLayout.CENTER);
+		itemFiltersAndList.add(itemFilterPanel, BorderLayout.NORTH);
+		
+		itemsPanels.add(itemFiltersAndList, BorderLayout.WEST);
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
 		
 		masterPanel.add(itemsPanels, BorderLayout.WEST);
