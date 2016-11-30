@@ -68,7 +68,7 @@ class FileManager{
 	private String determineLeagueDirectory(){
 		// Use the OS to guess where League would be installed 
 		// for Windows "C:\Riot Games\League of Legends" or "D:\Riot Games\League of Legends"
-		String path = "Riot Games/League of Legends";
+		String path = "Riot Games/League of Legends/Config";
 		String leagueDir = "";
 		if(osType.equals("windows")){
 			// check C: first, then D:
@@ -81,6 +81,13 @@ class FileManager{
 					leagueDir = "D:/" + path;
 				}
 			}
+		} else {
+		    // Mac dir
+		    macPath = "/Applications/League of Legends.app/Contents/Lol/Config";
+		    File f = new File(macPath);
+		    if(f.exists() && f.isDirectory()){
+		        leagueDir = macPath;
+		    }
 		}
 		// Don't know where to check on Mac... 
 		return leagueDir;
@@ -99,8 +106,11 @@ class FileManager{
 		if(osType.equals("windows")){
 			// save it in their AppData/Roaming, the same place Minecraft saves it's content
 			return System.getProperty("user.home") + "/AppData/Roaming/LoL_Shopkeeper";
-		}
-		// Don't know where to save on Mac...
+		} else if(osType.equals("mac")){
+		    // Don't know where to save on Mac...
+		    // Minecraft saves to ~/Library/Application Support/minecraft/
+		    return System.getProperty("user.home") + "/Library/Application Support/LoL_Shopkeeper";
+	    }
 		String unixFile = System.getProperty("user.home") + "/.LoL_Shopkeeper";
 		return unixFile;
 	}

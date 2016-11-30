@@ -9,14 +9,16 @@ Current Status:
   - Identifies the current League patch
   - Saves static data (item icons, item descriptions, etc.) to local file system
     - For Windows, saves to "%appdata%/LoL_Shopkeeper"
-    - For Unix/Mac, saves to "~/.LoL_Shopkeeper"
-  - UI Shows a list of all items (unordered)
+    - For Mac, saves to "~/Library/Application Support/LoL_Shopkeeper"
+    - For Unix, saves to "~/.LoL_Shopkeeper"
+  - UI Shows a list of all items (ordered alphabetically)
   - Item Details added
     - Shows items built from
 	- Shows items built into
 	- For both from/into items, you can click to swap to that item
 	- Details panel displays stats and unique passives/actives.
+  - Item Set displayed
+    - Different blocks for items
 
 Next Step:
-  - Allow for dragging items into different blocks of the item set
   - Add controls to create, open, save, and edit item sets
