@@ -75,7 +75,7 @@ class View{
 		farRight = new JPanel();
 		farRight.setLayout(new BorderLayout());
 		
-		controlPanel = new ControlPanel(backgroundColor);
+		controlPanel = new ControlPanel(backgroundColor, this);
 		itemSetPanel = new ItemSetPanel(itemListener, itemSetsWidth, maxHeight, backgroundColor);
 		
 		farRight.add(itemSetPanel, BorderLayout.CENTER);
