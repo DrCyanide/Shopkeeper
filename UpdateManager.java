@@ -24,11 +24,20 @@ class UpdateManager{
 	
 	private FileManager fileManager;
 	private Map<String,String> settings;
+	private View view = null;
 	
 	public UpdateManager(){
 		fileManager = new FileManager();
 		settings = fileManager.readSettings();
 	}
+	
+	public void setView(View view){
+		this.view = view;
+	}
+	
+	// Spawn a thread to do all the updating
+	// Show the updating dialog
+	// When finished, close the updating dialog
 	
 	public void loadRegion(){
 	    // If no region was specified and none in settings, then use "na"
@@ -122,9 +131,12 @@ class UpdateManager{
 		
 		// download all the sprites found
 		for(String entry : sprites){
-			byte[] imageData = fileManager.downloadFile(basePath + "/img/sprite/" + entry);
-			if(imageData.length > 0){
-    			fileManager.saveFile(true,"img/" + dataName, entry, imageData);
+			while(true){
+				byte[] imageData = fileManager.downloadFile(basePath + "/img/sprite/" + entry);
+				if(imageData.length > 0){
+					fileManager.saveFile(true,"img/" + dataName, entry, imageData);
+					break;
+				}
 			}
 		}
 		

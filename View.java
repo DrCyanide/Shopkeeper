@@ -37,9 +37,47 @@ class View{
 	
 	Color backgroundColor = Color.DARK_GRAY;
 	
-    public View(){
+	JDialog updatingDialog;
+	
+	String updateText = "Checking for updates...";
+	
+	public void displayUpdateDialog(){
+		updatingDialog = new JDialog();
+		updatingDialog.setTitle("Shopkeeper - Updating...");
+		updatingDialog.setModal(true);
+		updatingDialog.setContentPane(new JOptionPane(updateText, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null));
+		updatingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		updatingDialog.pack();
+		
+		updatingDialog.setVisible(true);
+	}
+	
+	public void closeUpdateDialog(){
+		updatingDialog.dispose();
+	}
+	
+	
+    public View(String[] supportedServers){		
         frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		// Initialize setup
+		FileManager fileManager = new FileManager();
+		String region = fileManager.readSettings().get("region");
+		UpdateManager updateManager = new UpdateManager();
+		updateManager.setView(this);
+		
+		if(region == null || region.isEmpty()){
+			updateText += "\nThe first time is the longest.";
+			String server = (String)JOptionPane.showInputDialog(frame, "<html><body><p style='width: 200px;'>Select your server.<br/>Used to get item descriptions in server's default language.</p></body></html>", "Shopkeeper - Select Server", JOptionPane.PLAIN_MESSAGE, null, supportedServers, "NA");
+			if(server == null){
+				server = "NA";
+			}
+			region = server.toLowerCase();
+		}
+		
+		updateManager.loadRegion(region);
+		
 		frame.setPreferredSize(new Dimension(maxWidth,maxHeight));
 		frame.setBackground(backgroundColor);
         
@@ -152,7 +190,12 @@ class View{
         
         for(String itemId : data.keySet()){
             Item item = new Item((Map<String, Object>)data.get(itemId));
-            item.setIcon((images.get("items")).get(item.sprite)); // Set the icon
+			BufferedImage spritePage = (images.get("items")).get(item.sprite);
+			if(spritePage == null){
+				// re-request it
+				System.out.println("Null Image");
+			}
+            item.setIcon(spritePage); // Set the icon
 			items.put(itemId, item);
 		}
         

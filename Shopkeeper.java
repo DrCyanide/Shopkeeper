@@ -3,26 +3,17 @@
 class Shopkeeper{
 	
 	//private FileManager fileManager;
-	private UpdateManager updateManager;
+	//private UpdateManager updateManager;
+	String[] supportedServers = {"NA", "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "OCE", "RU", "TR"};
 	
 	public Shopkeeper(){
-		updateManager = new UpdateManager();
-		updateManager.loadRegion();
+		//updateManager = new UpdateManager();
+		//updateManager.loadRegion();
 		
-		View view = new View();
-		/*
-		Item item = new Item("3751");
-		System.out.println("Item Name: " + item.name);
-		System.out.println("Sprite: " + item.sprite);
-		System.out.println("X: " + item.x + " Y: " + item.y);
-		System.out.println("H: " + item.h + " W: " + item.w);
-		*/
+		View view = new View(supportedServers);
 	}
 	
 	public static void main(String[] args){
 		Shopkeeper s = new Shopkeeper();
 	}
-	
-	
-	
 }

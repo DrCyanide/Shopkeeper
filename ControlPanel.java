@@ -51,21 +51,22 @@ class ControlPanel extends JPanel implements ActionListener{
     
     
     private void Save(){
-        // I can convert it to a string at least
+        // Convert to String
+		String baseIndent = "  ";
         String jsonString = "{\n";
-        jsonString += pair("title", viewPanel.itemSetPanel.setName, true);
-        jsonString += pair("type", "custom", true);
-        jsonString += pair("map", "any", true);
-        jsonString += pair("mode", "any", true);
-        //jsonString += pair("priority", false, true);
-        //jsonString += pair("sortrank", 0, true);
+        jsonString += baseIndent + pair("title", viewPanel.itemSetPanel.setName, true);
+        jsonString += baseIndent +pair("type", "custom", true);
+        jsonString += baseIndent +pair("map", "any", true);
+        jsonString += baseIndent +pair("mode", "any", true);
+        //jsonString += baseIndent +pair("priority", false, true); // Optional
+        //jsonString += baseIndent +pair("sortrank", 0, true); // Optional
         
-        jsonString += "\"blocks\": [\n";
-        
+        jsonString += baseIndent + "\"blocks\": [\n";
         jsonString += getBlocks();
-        
-        jsonString += "\n]\n}";
+        jsonString += "\n" + baseIndent + "]\n}";
         System.out.println(jsonString);
+		
+		// Save that string according to the settings
     }
     
     private String pair(String key, Object value, Boolean comma){
@@ -86,29 +87,33 @@ class ControlPanel extends JPanel implements ActionListener{
     private String getBlocks(){
         String allBlocks = "";
         ArrayList<ItemSetBlock> blocks = viewPanel.itemSetPanel.itemBlocks;
+		String blockIndent = "    ";
+		String blockContentIndent = "      ";
+		String itemIndent = "        ";
+		String itemContentIndent = "          ";
         for(int i = 0; i < blocks.size(); i++){
             if(i > 0){
-                allBlocks += ",";
+                allBlocks += ",\n";
             }
             ItemSetBlock block = blocks.get(i);
-            String blockString = "{";
-            
-            blockString += pair("type", block.blockName, true);
-            blockString += "\"items\": [";
+            String blockString = blockIndent + "{\n";
+			
+            blockString += blockContentIndent + pair("type", block.blockName, true);
+            blockString += blockContentIndent + "\"items\": [\n";
             
             for(int j = 0; j < block.items.size(); j++){
                 if(j > 0){
-                    blockString += ",";
+                    blockString += ",\n";
                 }
-                blockString += "{";
+                blockString += itemIndent + "{\n";
                 Item item = block.items.get(j);
-                blockString += pair("id",item.id, true);
-                blockString += pair("count", 1, false);
-                blockString += "}";
+                blockString += itemContentIndent + pair("id",item.id, true);
+                blockString += itemContentIndent + pair("count", 1, false);
+                blockString += itemIndent + "}";
             }
             
-            blockString += "]\n";
-            allBlocks += blockString + "}";
+            blockString += "\n" + blockContentIndent + "]\n";
+            allBlocks += blockString + blockIndent + "}";
         }
         return allBlocks;
     }
