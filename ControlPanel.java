@@ -7,7 +7,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 
 class ControlPanel extends JPanel implements ActionListener{
-    JButton openButton, saveButton, newButton, editButton;
+    JButton openButton, saveButton, newButton, editButton, deleteButton;
     Color backgroundColor;
     View viewPanel;
     
@@ -16,6 +16,8 @@ class ControlPanel extends JPanel implements ActionListener{
         this.viewPanel = viewPanel;
         setBackground(backgroundColor);
         
+		// http://www.small-icons.com/packs/24x24-free-toolbar-icons.htm
+		
 		try{
 			openButton = new JButton(new ImageIcon(ImageIO.read(new File("img/open.png"))));
 		}catch(Exception e){
@@ -43,11 +45,19 @@ class ControlPanel extends JPanel implements ActionListener{
 			editButton = new JButton("Edit");
 		}
         editButton.addActionListener(this);
+		
+		try{
+			deleteButton = new JButton(new ImageIcon(ImageIO.read(new File("img/delete2.png"))));
+		}catch(Exception e){
+			deleteButton = new JButton("Delete");
+		}
+        deleteButton.addActionListener(this);
         
         add(newButton);
         add(openButton);
         add(saveButton);
         add(editButton);
+		add(deleteButton);
     }
     
     public void actionPerformed(ActionEvent e){
@@ -68,6 +78,9 @@ class ControlPanel extends JPanel implements ActionListener{
 				viewPanel.clearItemSet();
 			}
         }
+		else if(e.getSource() == deleteButton){
+			System.out.println("Prompt for deleting");
+		}
     }
     
     

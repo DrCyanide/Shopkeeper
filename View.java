@@ -139,7 +139,7 @@ class View{
 		farRight.setLayout(new BorderLayout());
 		
 		controlPanel = new ControlPanel(backgroundColor, this);
-		itemSetPanel = new ItemSetPanel(itemListener, itemSetsWidth, maxHeight, backgroundColor);
+		itemSetPanel = new ItemSetPanel(itemListener, backgroundColor);
 		
 		farRight.add(itemSetPanel, BorderLayout.CENTER);
 		farRight.add(controlPanel, BorderLayout.NORTH);

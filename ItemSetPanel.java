@@ -15,14 +15,11 @@ class ItemSetPanel extends JPanel{
     ItemListener itemListener;
     JButton addBlockButton;
     
-    int maxWidth, maxHeight;
     Color backgroundColor;
     Color setNameColor = new Color(12, 232, 101);
     
-    public ItemSetPanel(ItemListener itemListener, int maxWidth, int maxHeight, Color backgroundColor){
+    public ItemSetPanel(ItemListener itemListener, Color backgroundColor){
         this.itemListener = itemListener;
-        this.maxWidth = maxWidth;
-	    this.maxHeight = maxHeight;
 	    this.backgroundColor = backgroundColor;
 	    
         addBlockButton = makeButton("Add Block", "img/plus.png");
@@ -47,14 +44,10 @@ class ItemSetPanel extends JPanel{
         
         setLayout(new BorderLayout());
         setBackground(backgroundColor);
-        setPreferredSize(new Dimension(maxWidth, maxHeight));
-        
-        
         
         JScrollPane scrollArea = new JScrollPane(mainWrapper);
         scrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollArea.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollArea.setPreferredSize(new Dimension(maxWidth, maxHeight));
         
         
         JPanel upperPanel = new JPanel();
