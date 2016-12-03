@@ -38,19 +38,33 @@ class View{
 	Color backgroundColor = Color.DARK_GRAY;
 	
 	JDialog updatingDialog;
+	JProgressBar progressBar;
 	
-	String updateText = "Checking for updates...";
+	JLabel updateText = new JLabel("Checking for updates...");
 	
 	public void displayUpdateDialog(){
 		updatingDialog = new JDialog();
 		updatingDialog.setTitle("Shopkeeper - Updating...");
 		updatingDialog.setModal(true);
-		updatingDialog.setContentPane(new JOptionPane(updateText, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null));
+		
+		progressBar = new JProgressBar(0, 100);
+		progressBar.setValue(0);
+        progressBar.setStringPainted(true);
+		
+		JPanel updateDialogPanel = new JPanel();
+		updateDialogPanel.add(updateText);
+		updateDialogPanel.add(progressBar);
+		
+		updatingDialog.setContentPane(new JOptionPane(updateDialogPanel, JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{}, null));
 		updatingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		updatingDialog.pack();
 		
 		updatingDialog.setVisible(true);
 	}
+	
+	public void updateProgress(int progress){
+        progressBar.setValue(progress);
+    }
 	
 	public void closeUpdateDialog(){
 		updatingDialog.dispose();
@@ -68,7 +82,6 @@ class View{
 		updateManager.setView(this);
 		
 		if(region == null || region.isEmpty()){
-			updateText += "\nThe first time is the longest.";
 			String server = (String)JOptionPane.showInputDialog(frame, "<html><body><p style='width: 200px;'>Select your server.<br/>Used to get item descriptions in server's default language.</p></body></html>", "Shopkeeper - Select Server", JOptionPane.PLAIN_MESSAGE, null, supportedServers, "NA");
 			if(server == null){
 				server = "NA";
@@ -77,6 +90,9 @@ class View{
 		}
 		
 		updateManager.loadRegion(region);
+		
+		updateManager.execute();
+		displayUpdateDialog();
 		
 		frame.setPreferredSize(new Dimension(maxWidth,maxHeight));
 		frame.setBackground(backgroundColor);
