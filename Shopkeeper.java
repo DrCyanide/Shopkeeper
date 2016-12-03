@@ -1,15 +1,10 @@
 
 
 class Shopkeeper{
-	
-	//private FileManager fileManager;
-	//private UpdateManager updateManager;
+	// Ideally find an automatic way to generate the supported servers list
 	String[] supportedServers = {"NA", "BR", "EUNE", "EUW", "JP", "KR", "LAN", "LAS", "OCE", "RU", "TR"};
 	
 	public Shopkeeper(){
-		//updateManager = new UpdateManager();
-		//updateManager.loadRegion();
-		
 		View view = new View(supportedServers);
 	}
 	

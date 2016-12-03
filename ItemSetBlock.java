@@ -23,7 +23,7 @@ class ItemSetBlock implements ActionListener{
         this.itemListener = itemListener;
         this.parent = parent;
         
-        renameButton = makeButton("Rename", "img/edit.png");
+        renameButton = makeButton("Rename", "img/rename.png");
         deleteButton = makeButton("Delete", "img/delete.png");
         addButton = makeButton("Add", "img/plus.png");
         removeButton = makeButton("Remove", "img/minus.png");

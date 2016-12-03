@@ -29,7 +29,7 @@ class ItemSetPanel extends JPanel{
         addBlockButton.addActionListener(e -> addBlock());
         
         
-        JButton renameButton = makeButton("Rename", "img/edit.png");
+        JButton renameButton = makeButton("Rename", "img/rename.png");
         renameButton.addActionListener(e -> {
             String name = (String)JOptionPane.showInputDialog("New item set name", setName);
             if(name != null && name.length() > 0){
@@ -74,6 +74,13 @@ class ItemSetPanel extends JPanel{
         
     }
     
+	public void clearAll(){
+		itemBlocks.clear();
+		addBlock();
+		setName = "New Item Set";
+		nameLabel.setText(setName);
+	}
+	
     public void addBlock(){
         itemBlocks.add(new ItemSetBlock(itemListener, this));
         redrawBlocks();

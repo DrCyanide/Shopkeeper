@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.border.EmptyBorder;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 class View{
     Map<String, Map<String, BufferedImage>> images;
@@ -23,6 +25,7 @@ class View{
 	JTextField itemFilterField;
 	
 	JPanel farRight;
+	JPanel masterPanel;
 	JFrame frame;
 	
 	int itemListCol = 4;
@@ -43,7 +46,7 @@ class View{
 	JLabel updateText = new JLabel("Checking for updates...");
 	
 	public void displayUpdateDialog(){
-		updatingDialog = new JDialog();
+		updatingDialog = new JDialog(frame);
 		updatingDialog.setTitle("Shopkeeper - Updating...");
 		updatingDialog.setModal(true);
 		
@@ -75,6 +78,12 @@ class View{
         frame = new JFrame("Shopkeeper - Item Sets for League of Legends");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		try{
+			frame.setIconImage(ImageIO.read(new File("img/potion_noglow.png")));
+		} catch (Exception e){
+			
+		}
+		
 		// Initialize setup
 		FileManager fileManager = new FileManager();
 		String region = fileManager.readSettings().get("region");
@@ -100,7 +109,7 @@ class View{
 		loadBufferedImages();
 		loadItems();
 		
-		JPanel masterPanel = new JPanel();
+		masterPanel = new JPanel();
 		masterPanel.setLayout(new BorderLayout());
 		masterPanel.setBackground(backgroundColor);
 		
@@ -156,7 +165,11 @@ class View{
             }
 		});
 		
-		itemFilterPanel.add(new JLabel("Search"), BorderLayout.WEST);// Add search icon
+		try{ // Add search icon
+			itemFilterPanel.add(new JLabel(new ImageIcon(ImageIO.read(new File("img/search.png")))), BorderLayout.WEST);
+		}catch(Exception e){
+			itemFilterPanel.add(new JLabel("Search"), BorderLayout.WEST);
+		}
 		itemFilterPanel.add(itemFilterField, BorderLayout.CENTER);
 		
 		
@@ -173,13 +186,16 @@ class View{
 		itemsPanels.add(itemDetails, BorderLayout.EAST);
 		
 		masterPanel.add(itemsPanels, BorderLayout.WEST);
-		masterPanel.add(farRight, BorderLayout.EAST);
+		masterPanel.add(farRight, BorderLayout.CENTER);
 
 		frame.getContentPane().add(masterPanel);
 		frame.pack();
         frame.setVisible(true);
     }
 	
+	public void clearItemSet(){
+		itemSetPanel.clearAll();
+	}
 	
 	
 	private void loadBufferedImages(){

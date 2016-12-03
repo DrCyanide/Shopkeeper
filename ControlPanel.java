@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 class ControlPanel extends JPanel implements ActionListener{
     JButton openButton, saveButton, newButton, editButton;
@@ -14,16 +16,32 @@ class ControlPanel extends JPanel implements ActionListener{
         this.viewPanel = viewPanel;
         setBackground(backgroundColor);
         
-        openButton = new JButton("Open");
+		try{
+			openButton = new JButton(new ImageIcon(ImageIO.read(new File("img/open.png"))));
+		}catch(Exception e){
+			openButton = new JButton("Open");
+		}
         openButton.addActionListener(this);
         
-        saveButton = new JButton("Save");
+		try{
+			saveButton = new JButton(new ImageIcon(ImageIO.read(new File("img/save.png"))));
+		}catch(Exception e){
+			saveButton = new JButton("Save");
+		}
         saveButton.addActionListener(this);
         
-        newButton = new JButton("New");
+		try{
+			newButton = new JButton(new ImageIcon(ImageIO.read(new File("img/new.png"))));
+		}catch(Exception e){
+			newButton = new JButton("New");
+		}
         newButton.addActionListener(this);
         
-        editButton = new JButton("Edit");
+		try{
+			editButton = new JButton(new ImageIcon(ImageIO.read(new File("img/edit.png"))));
+		}catch(Exception e){
+			editButton = new JButton("Edit");
+		}
         editButton.addActionListener(this);
         
         add(newButton);
@@ -41,11 +59,14 @@ class ControlPanel extends JPanel implements ActionListener{
             System.out.println("Edit! - ... open a dialog showing champions this set is for");
         }
         else if(e.getSource() == saveButton){
-            System.out.println("Save! - ... save the item set");
             Save();
         }
         else if(e.getSource() == newButton){
-            System.out.println("New! - ... create a new item set (prompt before nuking everything)");
+			// Should probably prompt before nuking...
+			int reply = JOptionPane.showConfirmDialog(null, "Create new item set? Unsaved changes will be lost.", "New?", JOptionPane.YES_NO_OPTION);
+			if(reply == JOptionPane.YES_OPTION) {
+				viewPanel.clearItemSet();
+			}
         }
     }
     
