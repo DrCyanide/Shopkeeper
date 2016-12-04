@@ -307,7 +307,8 @@ class FileManager{
 					}
 				}
 			}
-			
+		} catch (java.nio.file.DirectoryNotEmptyException dirNE){
+			System.out.println("Backup already exists, not replacing it");
 		}catch(Exception e){
 			System.out.println("Failed to make backup or clear bad item sets.");
 			e.printStackTrace();
@@ -327,8 +328,36 @@ class FileManager{
 		String f = new String(loadFile(false,"", "ItemSets.json"));
 		ItemSet = gson.fromJson(f, Map.class);
 		List<Map<String,Object>> itemsets = (ArrayList)ItemSet.get("itemSets");
+		
+		File globalScope = new File(settings.get("league_dir") + "/Global/Recommended");
+		
 		for(Map<String, Object> set : itemsets){
-			System.out.println(set.get("title"));
+			String rawSetName = (String)set.get("title");
+			rawSetName = rawSetName.replaceAll("\\W+", "_"); // clean it up so only valid characters are allowed
+			String itemSetFileName = "ItemSet_" + rawSetName;
+			// If a file with the same name already exists add a number to the end.
+			// Even if the number isn't the same for all copies of the set, the OPEN/SAVE functions can deal with that.
+			//System.out.println(itemSetFileName);
+			
+			String setString = set.toString(); // contents of the item set
+			// NOTE: That saves ints as floats... might be OK, might be a problem...
+			
+			ArrayList<Integer> associatedChampions = (ArrayList)set.get("associatedChampions");
+			if(associatedChampions.size() == 0){ // Global Scope
+				// Check for duplicate with the same name
+				int count = 0;
+				File setFile = new File(globalScope, itemSetFileName + ".json");
+				while(setFile.exists()){
+					count += 1;
+					setFile = new File(globalScope, itemSetFileName + "_" + count + ".json");
+				}
+				saveFile(false, "/Global/Recommended", setFile.getName(), setString.getBytes());
+			} else {
+				// Look up the champion ids, getting their championkey
+			}
+			
+			
+			System.exit(0);
 		}
 		
 		
