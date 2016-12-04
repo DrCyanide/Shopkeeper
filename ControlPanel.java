@@ -92,8 +92,8 @@ class ControlPanel extends JPanel implements ActionListener{
         jsonString += baseIndent +pair("type", "custom", true);
         jsonString += baseIndent +pair("map", "any", true);
         jsonString += baseIndent +pair("mode", "any", true);
-        //jsonString += baseIndent +pair("priority", false, true); // Optional
-        //jsonString += baseIndent +pair("sortrank", 0, true); // Optional
+        jsonString += baseIndent +pair("priority", false, true); // Optional
+        jsonString += baseIndent +pair("sortrank", 0, true); // Optional
         
         jsonString += baseIndent + "\"blocks\": [\n";
         jsonString += getBlocks();

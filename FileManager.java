@@ -2,6 +2,7 @@ import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.net.*;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import com.google.gson.Gson;
@@ -25,8 +27,10 @@ class FileManager{
 		settings = readSettings();
 		if(settings.get("league_dir").equals("")){
 			setLeagueDir(determineLeagueDirectory());
+			
 		} 
 		//updateStaticData("na", "http://ddragon.leagueoflegends.com/cdn", "6.22.1", "en_US");
+		convertRiotItemSets();
 	}
 	
 	// Read saveDir/settings.json
@@ -163,14 +167,20 @@ class FileManager{
 			True = load it from LoL Shopkeeper's files
 			False = load it from the League dir
 		*/
+		String newPath = "";
 		if(loadFromShopkeeper){
-			path = saveDir + "/" + path;
+			newPath = saveDir;
 		} else {
-			path = settings.get("league_dir") + "/" + path;
+			newPath = settings.get("league_dir");
 		}
-		File f = new File(path + "/" + filename);
+		if(path.length() > 0){
+			newPath += "/" + path;
+		}
+		
+		File f = new File(newPath + "/" + filename);
 		if(!f.exists()){
 			// throw filenotfoundexception
+			//System.out.println("File not found: " + f.toPath());
 			return new byte[0];
 		}
 		try{
@@ -247,4 +257,84 @@ class FileManager{
 		return output;
 	}
 
+	public void convertRiotItemSets(){
+		// Riot didn't follow the API for global sets, which means that pre-existing item sets are going to be painful to maintain/edit without changing them first.
+		// Riot saved all active item sets in Config/ItemSets.json so that'll be the master list to re-build
+
+		File backupFolder = new File(saveDir + "/backup/Champions");
+		if(!backupFolder.exists()){
+			try{
+				backupFolder.mkdirs();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		Path dest = backupFolder.toPath();
+		
+		File championsPath = new File(settings.get("league_dir") + "/Champions");
+		// Make a backup first, then delete the original
+		try{
+			if(championsPath.exists() && championsPath.isDirectory()){
+			
+				Files.copy(championsPath.toPath(), dest, StandardCopyOption.COPY_ATTRIBUTES,StandardCopyOption.REPLACE_EXISTING);
+			
+				// iterate through each champion and remove item sets that look like RIOT_ItemSet_#.json
+				String[] allChampions = championsPath.list();
+				if(allChampions != null){
+					for(String championKey : allChampions){
+						File champion = new File(championsPath, championKey);
+						if(champion.isDirectory()){
+							File backupChampion = new File(backupFolder, championKey);
+							//System.out.println("" + champion.getPath() + "\n" + backupChampion.getPath());
+							Files.copy(champion.toPath(), backupChampion.toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+							
+							File recommended = new File(champion.getPath() + "/Recommended");
+							if(recommended.exists() && recommended.isDirectory()){
+								File backupRecommended = new File(backupChampion, "Recommended");
+								Files.copy(champion.toPath(), backupRecommended.toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+								
+								File[] sets = recommended.listFiles();
+								for(File set : sets){
+									String fileName = set.getName();
+									if(fileName.contains("RIOT_ItemSet_") && fileName.contains(".json")){
+										Files.copy(set.toPath(), (new File(backupRecommended, fileName)).toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+										
+										//set.delete(); // delete the original
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}catch(Exception e){
+			System.out.println("Failed to make backup or clear bad item sets.");
+			e.printStackTrace();
+		}
+		
+		// Backup original ItemSets.json
+		try{
+			Files.copy((new File(settings.get("league_dir") + "/ItemSets.json")).toPath(), (new File(saveDir + "/backup/ItemSets.json")).toPath(), StandardCopyOption.COPY_ATTRIBUTES, StandardCopyOption.REPLACE_EXISTING);
+		} catch (Exception e){
+			System.out.println("Failed to make backup of ItemSets.json");
+		}
+		
+		
+		// Rebuild from ItemSet.json
+		Map<String, Object> ItemSet;
+		Gson gson = new Gson();
+		String f = new String(loadFile(false,"", "ItemSets.json"));
+		ItemSet = gson.fromJson(f, Map.class);
+		List<Map<String,Object>> itemsets = (ArrayList)ItemSet.get("itemSets");
+		for(Map<String, Object> set : itemsets){
+			System.out.println(set.get("title"));
+		}
+		
+		
+		
+		System.exit(0);
+		
+	}
+	
 }
